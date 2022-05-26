@@ -10,5 +10,11 @@ Wikipedia's definition: Minimax is a decision rule used in artificial intelligen
 
 I didn't do the algorithm in its recursive version, but only with for loops.
 
+# opening book
+from here:https://www.chessprogramming.net/new-version-of-the-baron-v3-43-plus-the-barons-polyglot-opening-book/?adlt=strict&toWww=1&redig=77DC80D3A2ED4E94A5CFD6733F2CC5B2
+
+# lichess account
+https://lichess.org/@/KrevetkaBot
+
 
 There are a lot of code that are redundant and there are tons of improvements that can be made.
