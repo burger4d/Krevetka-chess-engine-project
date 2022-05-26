@@ -1,4 +1,5 @@
 import chess
+import chess.polyglot
 import copy
 import time
 from random import *
@@ -12,12 +13,15 @@ turn = 0
 TURN = 0
 list_moves=[]
 book = {}
-with open("chess_opening.txt","r") as f:
-    val = f.read()
-    if val=="":
-        val="{}"
-    exec("book="+val)
-    f.close()
+try:
+    with open("chess_opening.txt","r") as f:
+        val = f.read()
+        if val=="":
+            val="{}"
+        exec("book="+val)
+        f.close()
+except:
+    pass
 
 def draw():
     print("a b c d e f g h\n---------------")
@@ -33,6 +37,23 @@ def string_coord(board):
                 c+=i
     return c
 
+def minimax(node, depth, maxplayer):
+    EVAL = evaluation(node)
+    if depth == 0 or EVAL in [0, -100, 100]:
+        return EVAL
+    if maxplayer:#blancs=True, nors=False
+        value = -100
+        for move in list(map(str,node.legal_moves)):
+            child = copy.copy(node)
+            child.push_san(move)
+            value = max(value, minimax(child, depth - 1, False))
+    else:
+        value = 100
+        for move in list(map(str,node.legal_moves)):
+            child = copy.copy(node)
+            child.push_san(move)
+            value = min(value, minimax(child, depth - 1, True))
+    return value
 
 def play_random(board):
     global turn
@@ -43,13 +64,15 @@ def play_random(board):
 
 def play_black2(board):
     global turn, list_moves, TURN
-    betascore = 100
     t=time.time()
     TURN += 0.5
     turn = 1
+    """
     if string_coord(coord) in book:
         move = book[string_coord(coord)]
     else:
+    """
+    if True:
         l=list(map(str,board.legal_moves))
         n={}
         for i in l:
@@ -72,10 +95,8 @@ def play_black2(board):
                             coord4=copy.copy(coord3)
                             coord4.push_san(k)
                             M[evaluation(coord4)] = k
-                            if evaluation(coord4) > betascore:
-                                break
                         N[min(M)]=j
-                        betascore = max(N)
+                        
                 n[max(N)]=i
             move = n[min(n)]
     turn = 1
@@ -87,11 +108,20 @@ def play_black2(board):
 def play_black(board):
     global turn, list_moves, book, TURN
     t=time.time()
-    TURN += 0.5
+    TURN += 1
     turn = 1
     actual_coord = evaluation(coord)
+    with chess.polyglot.open_reader("baron30.bin") as reader:
+        opening_moves = []
+        for entry in reader.find_all(coord):
+            opening_moves.append(entry.move)
+    """
     if string_coord(coord) in book:
         move = book[string_coord(coord)]
+    """
+    print(opening_moves)
+    if len(opening_moves)>0:
+        move = str(choice(opening_moves))
     else:
         l = list(map(str, board.legal_moves))
         n = {}
@@ -103,7 +133,7 @@ def play_black(board):
             if l2 == []:
                 e2=evaluation(coord2)
                 n[e2] = i
-                if e2 == -100:move = i;break
+                if e2 == -1000:move = i;break
             else:
                 for j in l2:
                     turn = 0
@@ -120,12 +150,12 @@ def play_black(board):
                             coord4.push_san(k)
                             e4=evaluation(coord4)
                             M[e4] = k
-                            if e4 == -100:break
+                            if e4 == -1000:break
                         N[min(M)]=j
                 n[max(N)]=i
             move = n[min(n)]
             book = book | {string_coord(coord):move}
-            if TURN <= 10.0:
+            if TURN <= 5:
                 with open("chess_opening.txt","w")as f:
                     f.write(str(book))
                     f.close()               
@@ -140,10 +170,20 @@ def play_black(board):
 def play_white(board):
     global turn, list_moves, book, TURN
     t=time.time()
-    TURN += 0.5
+    TURN += 1
     turn = 0
     actual_coord = evaluation(coord)
-    if string_coord(coord) in book:move = book[string_coord(coord)]
+    with chess.polyglot.open_reader("baron30.bin") as reader:
+        opening_moves = []
+        for entry in reader.find_all(coord):
+            opening_moves.append(entry.move)
+    """
+    if string_coord(coord) in book:
+        move = book[string_coord(coord)]
+    """
+    print(opening_moves)
+    if len(opening_moves)>0:
+        move = str(choice(opening_moves))
     else:
         l=list(map(str,board.legal_moves))
         n={}
@@ -155,7 +195,7 @@ def play_white(board):
             if l2 == []:
                 e2=evaluation(coord2)
                 n[e2] = i
-                if e2 == 100:move = i;break
+                if e2 == 1000:move = i;break
             else:
                 for j in l2:
                     turn = 1
@@ -172,12 +212,12 @@ def play_white(board):
                             coord4.push_san(k)
                             e4=evaluation(coord4)
                             M[e4] = k
-                            if e4 == 100:break
+                            if e4 == 1000:break
                         N[max(M)]=j
                 n[min(N)]=i
             move = n[max(n)]
             book = book | {string_coord(coord):move}
-            if TURN <= 10.0:
+            if TURN <= 5:
                 with open("chess_opening.txt","w")as f:
                     f.write(str(book))
                     f.close()
@@ -188,6 +228,22 @@ def play_white(board):
         Beep(400, 100)
     print(time.time() - t)
 
+def white():
+    pass
+
+def black(coord):
+    liste = list(map(str,coord.legal_moves))
+    values = {}
+    for move in liste:
+        child = copy.copy(coord)
+        child.push_san(move)
+        EVAL_CHILD = minimax(child, 2, False)
+        values[EVAL_CHILD] = move
+    pprint(values)
+    move = values[min(values)]
+    print(move)
+    coord.push_san(move)
+    
 def play_human(move, mode="normal"):
     global turn, list_moves, book
     turn = abs(turn-1)
@@ -203,49 +259,23 @@ def play_human(move, mode="normal"):
 def evaluation(board):
     c=string_coord(board)
     score = 0
-    val = {" ":0, ".":0,"p":-1,"P":1,"n":-3.2,"N":3.2,"b":-3.33,"B":3.33,"q":-8.8,"Q":8.8,"r":-5.1,"R":5.1,"k":-100,"K":100}
-    for i in c:score+=val[i]
-    if board.is_check():
-        if turn == 0:score+=0.1
-        else:score-=0.1
-    if "k" in [c[2], c[16]] and not coord.has_castling_rights("black"):score -= 0.1
-    if "K" in [c[~2+1], c[~16+1]] and not coord.has_castling_rights("white"):score += 0.1
-    if board.is_stalemate() or coord.can_claim_draw():score = 0
+    val = {" ":0, ".":0,"p":-10,"P":10,"n":-32,"N":32,"b":-33,"B":33,"q":-88,"Q":88,"r":-51,"R":51,"k":-1000,"K":1000}
+    
+    for i in c:
+        score+=val[i]
+    if board.is_stalemate() or coord.can_claim_draw():
+        score = 0
     elif board.is_checkmate():
-        score = 100
-        if turn == 1:score *= -1
+        score = 1000
+        if board.turn:
+            score *= -1
+    for i in range(64):
+        if board.is_attacked_by(chess.WHITE, i):
+            score+=1
+        if board.is_attacked_by(chess.BLACK, i):
+            score-=1
     return score
 
-def mc_evaluation(board):
-    global turn
-    c=string_coord(board)
-    score = 0
-    if board.is_stalemate() or board.can_claim_draw():
-        return  0
-    elif board.is_checkmate():
-        score = 100
-        if turn == 1:
-            score *= -1
-        return score
-    else:
-        coordeval = copy.copy(board)
-        Turn = turn
-        for j in range(20):
-            for i in range(200):
-                try:
-                    play_random(coordeval)
-                except:
-                    if coordeval.is_stalemate() or coordeval.can_claim_draw():
-                        score+=0
-                    elif coordeval.is_checkmate():
-                        score += 1
-                        if turn == 1:
-                            score -= 2
-                    break
-            if i==199:
-                score+=evaluation(board)/10
-        turn = Turn
-    return score
 
 if __name__ == "__main__":
     while True not in [coord.is_checkmate(), coord.is_stalemate()]:
@@ -255,6 +285,7 @@ if __name__ == "__main__":
         draw()
         if True not in [coord.is_checkmate(), coord.is_stalemate()]:
             play_black(coord)
+            #black()
             #play_human(input("move"))
         elif coord.is_stalemate():
             print("DRAW")
