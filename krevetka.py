@@ -3,6 +3,7 @@ import chess.polyglot
 import copy
 import time
 from random import *
+from online_sources import syzygy
 win = True
 try:
     from winsound import Beep
@@ -11,9 +12,10 @@ except:
 coord = chess.Board()
 turn = 0
 TURN = 0
-list_moves=[]
+"""
 book = {}
 try:
+
     with open("chess_opening.txt","r") as f:
         val = f.read()
         if val=="":
@@ -22,7 +24,7 @@ try:
         f.close()
 except:
     pass
-
+"""
 def draw():
     print("a b c d e f g h\n---------------")
     print(coord)
@@ -36,7 +38,7 @@ def string_coord(board):
             if i!=" ":
                 c+=i
     return c
-
+"""
 def minimax(node, depth, maxplayer):
     EVAL = evaluation(node)
     if depth == 0 or EVAL in [0, -100, 100]:
@@ -54,6 +56,10 @@ def minimax(node, depth, maxplayer):
             child.push_san(move)
             value = min(value, minimax(child, depth - 1, True))
     return value
+"""
+
+def use_syzygy():
+    return len(coord.piece_map())<=10
 
 def play_random(board):
     global turn
@@ -61,7 +67,7 @@ def play_random(board):
     n = str(choice(list(board.legal_moves)))
     board.push_san(n)
 
-
+'''
 def play_black2(board):
     global turn, list_moves, TURN
     t=time.time()
@@ -103,10 +109,10 @@ def play_black2(board):
     board.push_san(move)
     list_moves.append(move)
     print(time.time() - t)
-
+'''
 
 def play_black(board):
-    global turn, list_moves, book, TURN
+    global turn, TURN
     t=time.time()
     TURN += 1
     turn = 1
@@ -119,9 +125,13 @@ def play_black(board):
     if string_coord(coord) in book:
         move = book[string_coord(coord)]
     """
-    print(opening_moves)
+    possible_move = ""
+    if use_syzygy():
+        possible_move = syzygy(board.fen())
     if len(opening_moves)>0:
         move = str(choice(opening_moves))
+    elif possible_move!="":
+        move = possible_move
     else:
         l = list(map(str, board.legal_moves))
         n = {}
@@ -154,21 +164,22 @@ def play_black(board):
                         N[min(M)]=j
                 n[max(N)]=i
             move = n[min(n)]
+            """
             book = book | {string_coord(coord):move}
             if TURN <= 5:
                 with open("chess_opening.txt","w")as f:
                     f.write(str(book))
-                    f.close()               
+                    f.close()
+            """
     turn = 1
     board.push_san(move)
-    list_moves.append(move)
     if win:
         Beep(400, 100)
     print(time.time() - t)
 
 
 def play_white(board):
-    global turn, list_moves, book, TURN
+    global turn, TURN
     t=time.time()
     TURN += 1
     turn = 0
@@ -181,9 +192,13 @@ def play_white(board):
     if string_coord(coord) in book:
         move = book[string_coord(coord)]
     """
-    print(opening_moves)
+    possible_move = ""
+    if use_syzygy():
+        possible_move = syzygy(board.fen())
     if len(opening_moves)>0:
         move = str(choice(opening_moves))
+    elif possible_move!="":
+        move = possible_move
     else:
         l=list(map(str,board.legal_moves))
         n={}
@@ -216,14 +231,15 @@ def play_white(board):
                         N[max(M)]=j
                 n[min(N)]=i
             move = n[max(n)]
+            """
             book = book | {string_coord(coord):move}
             if TURN <= 5:
                 with open("chess_opening.txt","w")as f:
                     f.write(str(book))
                     f.close()
+            """
     turn = 0
     board.push_san(move)
-    list_moves.append(move)
     if win:
         Beep(400, 100)
     print(time.time() - t)
@@ -244,17 +260,11 @@ def black(coord):
     print(move)
     coord.push_san(move)
     
-def play_human(move, mode="normal"):
-    global turn, list_moves, book
-    turn = abs(turn-1)
-    if move in list(map(str,coord.legal_moves)):
-        list_moves.append(move)
-        if mode=="learn":
-            book = book | {string_coord(coord):move}
-            with open("chess_opening.txt","w")as f:
-                f.write(str(book))
-                f.close()
+def play_human(move):
+    try:
         coord.push_san(move)
+    except ValueError:
+        pass
     
 def evaluation(board):
     c=string_coord(board)
@@ -284,9 +294,9 @@ if __name__ == "__main__":
         play_human(input("move:"))
         draw()
         if True not in [coord.is_checkmate(), coord.is_stalemate()]:
-            play_black(coord)
+            #play_black(coord)
             #black()
-            #play_human(input("move"))
+            play_human(input("move"))
         elif coord.is_stalemate():
             print("DRAW")
         else:
