@@ -1,6 +1,7 @@
 from krevetka import *
 from tkinter import *
 from time import sleep
+from online_sources import lichess_board
 tk = Tk()
 tk.title("Chess")
 tk.configure(cursor = "hand2")
@@ -8,31 +9,55 @@ w = Canvas(tk, width=640, height=640, bg="#ffffff")
 w.pack()
 Move = ""
 phase = 0
+lichess_url = None
+def Undo():
+    global coord
+    try:
+        coord.pop()
+        coord.pop()
+    except:
+        pass
+    Draw()
 
 
 def select1():
-    global phase, Btn1, Btn2, Btn3
+    global phase, Btn1, Btn2, Btn3, undo
+    enter.destroy()
     phase = 1
     Btn1.destroy()
     Btn2.destroy()
     Btn3.destroy()
+    undo = Button(tk, text="undo", overrelief="ridge", command=Undo)
+    undo.pack()
     Draw()
+
+
 def select2():
-    global phase, Btn1, Btn2, Btn3
+    global phase, Btn1, Btn2, Btn3, undo, enter
     phase = 2
     Btn1.destroy()
     Btn2.destroy()
     Btn3.destroy()
+    undo = Button(tk, text="undo", overrelief="ridge", command=Undo)
+    undo.pack()
+    enter.pack()
     Draw()
+
+
 def select3():
-    global phase, Btn1, Btn2, Btn3
+    global phase, Btn1, Btn2, Btn3, undo, enter
     phase = 3
     Btn1.destroy()
     Btn2.destroy()
     Btn3.destroy()
     Draw()
     play_white(coord)
+    undo = Button(tk, text="undo", overrelief="ridge", command=Undo)
+    undo.pack()
+    enter.pack()
     Draw()
+
+
 def click(event):
     global Move
     if phase != 0:
@@ -59,17 +84,58 @@ def click(event):
             Move = ""
             Draw()
             if phase == 2 and test != coord:
-                print(list_moves[-1])
                 play_black(coord)
                 Draw()
-                print(list_moves[-1])
             elif phase == 3 and test != coord:
-                print(list_moves[-1])
                 play_white(coord)
                 Draw()
-                print(list_moves[-1])
+
+
+def select_url(event):
+    #lichess game
+    global lichess_url, enter
+    lichess_url = enter.get()
+    enter.destroy()
+    old_data = []
+    while True:
+        try:
+            if phase == 2:
+                #si ia joue les noirs...
+                data = lichess_board(lichess_url)
+                print(data)
+                if len(data)%2!=0 and data!=old_data:
+                    #print(data[-1])
+                    play_human(data[-1])        
+                    Draw()
+                    old_data = data
+                    print("ia noir va jouer")
+                    play_black(coord)
+                    Draw()
+                else:
+                    print("en attente(le blancs doivent jouer)")
+                    print(data)
+                    sleep(2)
+            elif phase == 3:
+                data = lichess_board(lichess_url)
+                if len(data)%2==0 and data!=old_data:
+                    print("le joueur blanc joue")
+                    play_human(data[-1])
+                    Draw()
+                    old_data = data
+                    #print("ia blanc va jouer")
+                    play_white(coord)
+                    Draw()
+                else:
+                    print("en attente(les noirs doivent jouer)")
+                sleep(2)
+            else:
+                break
+        except Exception as ex:
+            print(ex)
+            break
 
 def Draw():
+    print(evaluation(coord))
     w.itemconfigure("pieces", state="hidden")
     d = string_coord(coord)
     if phase == 3:
@@ -89,9 +155,11 @@ def verification():
     if coord.is_checkmate():
         phase = 0
         w.create_text(320, 360, text="checkmate", font="Times 30", fill="red")
-    elif coord.is_stalemate() or coord.can_claim_draw():
+    elif coord.is_stalemate():
         phase = 0
         w.create_text(320, 320, text="DRAW", font="Times 30", fill="orange")
+    elif coord.can_claim_draw():
+        w.create_text(320, 320, text="DRAW?", font="Times 30", fill="orange")
 
 for i in range(1, 9, 2):  # creation du plateau en interface
     for j in range(1, 9, 2):
@@ -109,7 +177,9 @@ Btn2 = Button(tk, text="human vs AI", overrelief="ridge", command=select2)
 Btn2.pack()
 Btn3 = Button(tk, text="AI vs human", overrelief="ridge", command=select3)
 Btn3.pack()
+enter = Entry(tk)
 #Btn4 = Button(tk, text="learn", overrelief="ridge", command=select4)
 #Btn4.pack()
+enter.bind("<Return>", select_url)
 w.bind_all("<Button-1>", click)
 tk.mainloop()
