@@ -1,5 +1,6 @@
 # Krevetka-chess-engine-project
-A basic chess engine coded in python using the python library chess.
+A basic chess engine coded in python.
+(Using the the python library chess, here 👉 https://pypi.org/project/chess/?adlt=strict&toWww=1&redig=9D7008CF0644473BB6615ACF0B8959C2)
 
 Screenshot
 ![Capture](https://user-images.githubusercontent.com/104983707/166911776-a3860ced-65a5-4b0e-94ce-0bae0b65a930.PNG)
@@ -7,9 +8,9 @@ Screenshot
 
 # Why Krevetka?
 The name "Krevetka" means 🍤"shrimp"🦐.
-It is in the same spirit like other chess engines, for example Rybka ("Rybka" means "fish"🐟)
+It is in the same spirit like other chess engines, for example Rybka or stockfish (note that "Rybka" means "fish"🐟)
 
-# algorithm:
+# The algorithm:
 Wikipedia's definition: Minimax is a decision rule used in artificial intelligence, decision theory, game theory, statistics, and philosophy for minimizing the possible loss for a worst case (maximum loss) scenario. When dealing with gains, it is referred to as "maximin"—to maximize the minimum gain. Originally formulated for n-player zero-sum game theory, covering both the cases where players take alternate moves and those where they make simultaneous moves, it has also been extended to more complex games and to general decision-making in the presence of uncertainty.
 
 I didn't do the algorithm in its recursive version, but only with some "for" loops(faster).
@@ -29,7 +30,7 @@ This file is a homemade API. The AI can have access to the endgame tablebase syz
 -README.md:
 The file that you are currently reading.
 
-# lichess account
+# Lichess account:
 here: 👉https://lichess.org/@/KrevetkaBot
 
 # Run it!
