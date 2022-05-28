@@ -17,12 +17,15 @@ I didn't do the algorithm in its recursive version, but only with some "for" loo
 # Files:
 -baron30.bin:
 A polyglot opening book, from here: 👉 https://www.chessprogramming.net/new-version-of-the-baron-v3-43-plus-the-barons-polyglot-opening-book/?adlt=strict&toWww=1&redig=77DC80D3A2ED4E94A5CFD6733F2CC5B2
--krevetka.py:\n
+
+-krevetka.py:
 The code of the chess engine.
 -main.py:
+
 The file with the GUI.
 -online_sources.py:
 This file is a homemade API. The AI can have access to the endgame tablebase syzygy (here👉https://syzygy-tables.info/?adlt=strict&toWww=1&redig=7B4251AD8D5542B89B81810568F3680B), and can also see the moves of the opponent on lichess, just by pasting the url of the game(But you still have to manually play the moves of the AI).
+
 -README.md:
 The file that you are currently reading.
 
