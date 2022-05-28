@@ -17,7 +17,7 @@ I didn't do the algorithm in its recursive version, but only with some "for" loo
 # Files:
 -baron30.bin:
 A polyglot opening book, from here: 👉 https://www.chessprogramming.net/new-version-of-the-baron-v3-43-plus-the-barons-polyglot-opening-book/?adlt=strict&toWww=1&redig=77DC80D3A2ED4E94A5CFD6733F2CC5B2
--krevetka.py:
+-krevetka.py:\n
 The code of the chess engine.
 -main.py:
 The file with the GUI.
