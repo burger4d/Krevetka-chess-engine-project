@@ -21,9 +21,10 @@ A polyglot opening book, from here: 👉 https://www.chessprogramming.net/new-ve
 
 -krevetka.py:
 The code of the chess engine.
--main.py:
 
+-main.py:
 The file with the GUI.
+
 -online_sources.py:
 This file is a homemade API. The AI can have access to the endgame tablebase syzygy (here👉https://syzygy-tables.info/?adlt=strict&toWww=1&redig=7B4251AD8D5542B89B81810568F3680B), and can also see the moves of the opponent on lichess, just by pasting the url of the game(But you still have to manually play the moves of the AI).
 
