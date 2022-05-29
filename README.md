@@ -1,6 +1,5 @@
 # Krevetka-chess-engine-project
 A basic chess engine coded in python.
-(Using the the python library chess, here 👉 https://pypi.org/project/chess/?adlt=strict&toWww=1&redig=9D7008CF0644473BB6615ACF0B8959C2)
 
 Screenshot
 ![Capture](https://user-images.githubusercontent.com/104983707/166911776-a3860ced-65a5-4b0e-94ce-0bae0b65a930.PNG)
@@ -26,7 +25,7 @@ The code of the chess engine.
 The file with the GUI.
 
 -online_sources.py:
-This file is a homemade API. The AI can have access to the endgame tablebase syzygy (here👉https://syzygy-tables.info/?adlt=strict&toWww=1&redig=7B4251AD8D5542B89B81810568F3680B), and can also see the moves of the opponent on lichess, just by pasting the url of the game(But you still have to manually play the moves of the AI).
+This file is a homemade API. The AI can have access to the endgame tablebase syzygy (here👉https://syzygy-tables.info/?adlt=strict&toWww=1&redig=7B4251AD8D5542B89B81810568F3680B), and can also play game against someone on lichess, just by pasting the url of the game.
 
 -README.md:
 The file that you are currently reading.
@@ -36,6 +35,8 @@ here: 👉https://lichess.org/@/KrevetkaBot
 ![game](https://user-images.githubusercontent.com/104983707/170866422-873fb47d-0310-46db-b7e9-55fbe7cb5910.gif)
 
 # Run it!
+Requirements: Python 3.7+, python chess library(here 👉 https://pypi.org/project/chess/?adlt=strict&toWww=1&redig=9D7008CF0644473BB6615ACF0B8959C2), pyautogui(here 👉https://pypi.org/project/PyAutoGUI/?adlt=strict&toWww=1&redig=51B1DB6A75634B18B9BCBF57E7D5375B)
+
 You must run the main.py file, if you want to play with the GUI(You can play without AI in the command just by running the krevetka.py file). I will also recommend to run it with the python interpreter pypy(here 👉 https://www.pypy.org/), dividing by two the waiting time(maximum 60s without, vs 30s with)).
 
 
