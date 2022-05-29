@@ -33,6 +33,8 @@ The file that you are currently reading.
 
 # Lichess account:
 here: 👉https://lichess.org/@/KrevetkaBot
+![image](https://user-images.githubusercontent.com/104983707/170866365-9960e426-8d51-4821-b2fc-58e175d90ae5.png)
+
 
 # Run it!
 You must run the main.py file, if you want to play with the GUI(You can play without AI in the command just by running the krevetka.py file). I will also recommend to run it with the python interpreter pypy(here 👉 https://www.pypy.org/), dividing by two the waiting time(maximum 60s without, vs 30s with)).
