@@ -12,7 +12,7 @@ It is in the same spirit like other chess engines, for example Rybka or stockfis
 # The algorithm:
 Wikipedia's definition: Minimax is a decision rule used in artificial intelligence, decision theory, game theory, statistics, and philosophy for minimizing the possible loss for a worst case (maximum loss) scenario. When dealing with gains, it is referred to as "maximin"—to maximize the minimum gain. Originally formulated for n-player zero-sum game theory, covering both the cases where players take alternate moves and those where they make simultaneous moves, it has also been extended to more complex games and to general decision-making in the presence of uncertainty.
 
-I didn't do the algorithm in its recursive version, but only with some "for" loops(faster).
+Krevetka uses this algorithm, with a depth of 3. I didn't do the algorithm in its recursive version, but only with some "for" loops(faster).
 
 # Files:
 -baron30.bin:
@@ -25,7 +25,7 @@ The code of the chess engine.
 The file with the GUI.
 
 -online_sources.py:
-This file is a homemade API. The AI can have access to the endgame tablebase syzygy (here👉https://syzygy-tables.info/?adlt=strict&toWww=1&redig=7B4251AD8D5542B89B81810568F3680B), and can also play game against someone on lichess, just by pasting the url of the game.
+This file is a homemade API. The AI can have access to the endgame tablebase syzygy (here👉https://syzygy-tables.info/?adlt=strict&toWww=1&redig=7B4251AD8D5542B89B81810568F3680B), and can also play game against someone on lichess, just by pasting the url of the game(I didn't use the LichessAPI, due to the procrastinization when I must read its documentation and also because I wanted to improve my skills in python, with urllib and pyautogui).
 
 -README.md:
 The file that you are currently reading.
