@@ -10,8 +10,6 @@ try:
 except:
     win = False
 coord = chess.Board()
-turn = 0
-TURN = 0
 """
 book = {}
 try:
@@ -62,8 +60,6 @@ def use_syzygy():
     return len(coord.piece_map())<=10
 
 def play_random(board):
-    global turn
-    turn = abs(turn - 1)
     n = str(choice(list(board.legal_moves)))
     board.push_san(n)
 
@@ -112,10 +108,6 @@ def play_black2(board):
 '''
 
 def play_black(board):
-    global turn, TURN
-    t=time.time()
-    TURN += 1
-    turn = 1
     actual_coord = evaluation(coord)
     with chess.polyglot.open_reader("baron30.bin") as reader:
         opening_moves = []
@@ -126,7 +118,9 @@ def play_black(board):
         move = book[string_coord(coord)]
     """
     possible_move = ""
-    if use_syzygy():
+    if len(board.move_stack) == 1:
+        move = str(board.move_stack)
+    elif use_syzygy():
         possible_move = syzygy(board.fen())
     if len(opening_moves)>0:
         move = str(choice(opening_moves))
@@ -146,7 +140,6 @@ def play_black(board):
                 if e2 == -1000:move = i;break
             else:
                 for j in l2:
-                    turn = 0
                     coord3=copy.copy(coord2)
                     coord3.push_san(j)
                     M={}
@@ -155,7 +148,6 @@ def play_black(board):
                         N[evaluation(coord3)] = j
                     else:
                         for k in l3:
-                            turn = 1
                             coord4=copy.copy(coord3)
                             coord4.push_san(k)
                             e4=evaluation(coord4)
@@ -171,18 +163,16 @@ def play_black(board):
                     f.write(str(book))
                     f.close()
             """
-    turn = 1
     board.push_san(move)
     if win:
         Beep(400, 100)
-    print(time.time() - t)
+    print(str(board.move_stack[-1]))
+    print("time:",time.time() - t,"sec")
+    print("evaluation:",evaluation(board))
 
 
 def play_white(board):
-    global turn, TURN
     t=time.time()
-    TURN += 1
-    turn = 0
     actual_coord = evaluation(coord)
     with chess.polyglot.open_reader("baron30.bin") as reader:
         opening_moves = []
@@ -193,7 +183,9 @@ def play_white(board):
         move = book[string_coord(coord)]
     """
     possible_move = ""
-    if use_syzygy():
+    if len(board.move_stack) == 1:
+        move = str(board.move_stack)
+    elif use_syzygy():
         possible_move = syzygy(board.fen())
     if len(opening_moves)>0:
         move = str(choice(opening_moves))
@@ -213,7 +205,6 @@ def play_white(board):
                 if e2 == 1000:move = i;break
             else:
                 for j in l2:
-                    turn = 1
                     coord3=copy.copy(coord2)
                     coord3.push_san(j)
                     M={}
@@ -222,7 +213,6 @@ def play_white(board):
                         N[evaluation(coord3)] = j
                     else:
                         for k in l3:
-                            turn = 0
                             coord4=copy.copy(coord3)
                             coord4.push_san(k)
                             e4=evaluation(coord4)
@@ -238,12 +228,13 @@ def play_white(board):
                     f.write(str(book))
                     f.close()
             """
-    turn = 0
     board.push_san(move)
     if win:
         Beep(400, 100)
-    print(time.time() - t)
-
+    print(str(board.move_stack[-1]))
+    print("time",time.time() - t,"sec")
+    print("evaluation:",evaluation(board))
+'''
 def white():
     pass
 
@@ -259,10 +250,13 @@ def black(coord):
     move = values[min(values)]
     print(move)
     coord.push_san(move)
-    
+'''
 def play_human(move):
     try:
         coord.push_san(move)
+        print(str(coord.move_stack[-1]))
+        print("evaluation:", evaluation(coord))
+        print(move)
     except ValueError:
         pass
     
@@ -270,20 +264,27 @@ def evaluation(board):
     c=string_coord(board)
     score = 0
     val = {" ":0, ".":0,"p":-10,"P":10,"n":-32,"N":32,"b":-33,"B":33,"q":-88,"Q":88,"r":-51,"R":51,"k":-1000,"K":1000}
-    
     for i in c:
-        score+=val[i]
+        score += val[i]#difference de materiel
+    for i in range(64):
+        if board.is_attacked_by(chess.WHITE, i):#liberté de mouvements
+            score += 1
+        if board.is_attacked_by(chess.BLACK, i):
+            score -= 1
+    score += c[8:16].count("P")*20 #pion passé
+    score -= c[48:56].count("p")*20
+    score += c[16:24].count("P")*15 #pion passé
+    score -= c[40:48].count("p")*15
+    if "R" in c[8:16]:
+        score+=20#tour en 7e rangée
+    if "r" in c[48:56]:
+        score-=20
     if board.is_stalemate() or coord.can_claim_draw():
         score = 0
     elif board.is_checkmate():
         score = 1000
         if board.turn:
             score *= -1
-    for i in range(64):
-        if board.is_attacked_by(chess.WHITE, i):
-            score+=1
-        if board.is_attacked_by(chess.BLACK, i):
-            score-=1
     return score
 
 
