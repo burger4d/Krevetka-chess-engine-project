@@ -40,4 +40,4 @@ Requirements: Python 3.7+, python chess library(here 👉 https://pypi.org/proje
 You must run the main.py file, if you want to play with the GUI(You can play without AI in the command just by running the krevetka.py file). I will also recommend to run it with the python interpreter pypy(here 👉 https://www.pypy.org/), dividing by two the waiting time(maximum 60s without, vs 30s with)).
 
 
-(PS: There are a lot of code that are redundant and there are tons of improvements that can be made.)
+(PS: There is a lot of code that is redundant and there are tons of improvements that can be made.)
