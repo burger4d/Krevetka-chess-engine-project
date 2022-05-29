@@ -108,6 +108,7 @@ def play_black2(board):
 '''
 
 def play_black(board):
+    t = time.time()
     actual_coord = evaluation(coord)
     with chess.polyglot.open_reader("baron30.bin") as reader:
         opening_moves = []
@@ -172,7 +173,7 @@ def play_black(board):
 
 
 def play_white(board):
-    t=time.time()
+    t = time.time()
     actual_coord = evaluation(coord)
     with chess.polyglot.open_reader("baron30.bin") as reader:
         opening_moves = []
