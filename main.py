@@ -1,7 +1,8 @@
 from krevetka import *
 from tkinter import *
 from time import sleep
-from online_sources import lichess_board
+from online_sources import *
+import os
 tk = Tk()
 tk.title("Chess")
 tk.configure(cursor = "hand2")
@@ -96,46 +97,53 @@ def select_url(event):
     global lichess_url, enter
     lichess_url = enter.get()
     enter.destroy()
+    w.create_text(320, 320, text="5s for the mouse to be in the top left-hand corner of the board", fill="green", tag="url")
+    tk.update()
+    coord_board1 = get_mouse_board()
+    w.itemconfigure("url", state="hidden")
+    w.create_text(320, 320, text="5s for the mouse to be in the lower right-hand corner of the board", fill="green", tag="url")
+    tk.update()
+    coord_board2 = get_mouse_board()
+    w.itemconfigure("url", state="hidden")
+    coord_board = coord_board1+coord_board2
     old_data = []
+    if phase == 3:
+        play_mouse(str(coord.move_stack[-1]), coord_board, False)
     while True:
-        try:
-            if phase == 2:
-                #si ia joue les noirs...
-                data = lichess_board(lichess_url)
-                print(data)
-                if len(data)%2!=0 and data!=old_data:
-                    #print(data[-1])
-                    play_human(data[-1])        
-                    Draw()
-                    old_data = data
-                    print("ia noir va jouer")
-                    play_black(coord)
-                    Draw()
-                else:
-                    print("en attente(le blancs doivent jouer)")
-                    print(data)
-                    sleep(2)
-            elif phase == 3:
-                data = lichess_board(lichess_url)
-                if len(data)%2==0 and data!=old_data:
-                    print("le joueur blanc joue")
-                    play_human(data[-1])
-                    Draw()
-                    old_data = data
-                    #print("ia blanc va jouer")
-                    play_white(coord)
-                    Draw()
-                else:
-                    print("en attente(les noirs doivent jouer)")
-                sleep(2)
+        if phase == 2:
+            #si ia joue les noirs...
+            data = lichess_board(lichess_url)
+            #print(data)
+            if len(data)%2!=0 and data!=old_data:
+                #print(data[-1])
+                play_human(data[-1])        
+                Draw()
+                old_data = data
+                print("ia noir va jouer")
+                play_black(coord)
+                play_mouse(str(coord.move_stack[-1]), coord_board, coord.turn)
+                Draw()
             else:
-                break
-        except Exception as ex:
-            print(ex)
+                print("en attente(le blancs doivent jouer)")
+                #print(data)
+                sleep(2)
+        elif phase == 3:
+            data = lichess_board(lichess_url)
+            if len(data)%2==0 and data!=old_data:
+                play_human(data[-1])
+                Draw()
+                old_data = data
+                print("ia blanc va jouer")
+                play_white(coord)
+                play_mouse(str(coord.move_stack[-1]), coord_board, coord.turn)
+                Draw()
+            else:
+                print("en attente(les noirs doivent jouer)")
+            sleep(2)
+        else:
             break
 
 def Draw():
-    print(evaluation(coord))
     w.itemconfigure("pieces", state="hidden")
     d = string_coord(coord)
     if phase == 3:
@@ -155,9 +163,17 @@ def verification():
     if coord.is_checkmate():
         phase = 0
         w.create_text(320, 360, text="checkmate", font="Times 30", fill="red")
+        try:
+            os.system("endgame.mp3")
+        except:
+            pass
     elif coord.is_stalemate():
         phase = 0
         w.create_text(320, 320, text="DRAW", font="Times 30", fill="orange")
+        try:
+            os.system("endgame.mp3")
+        except:
+            pass
     elif coord.can_claim_draw():
         w.create_text(320, 320, text="DRAW?", font="Times 30", fill="orange")
 
