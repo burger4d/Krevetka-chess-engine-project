@@ -33,6 +33,8 @@ The file that you are currently reading.
 # Lichess account:
 ⚠WARNING⚠: NOTE THAT ANYONE USING THIS BOT FOR CHEATING WILL BE BANNED(quiet logic I think). EVEN THOUGH YOU ARE USING IT WITH A LICHESS BOT ACCOUNT, YOU MUST KNOW THAT THIS BOT DOES NOT USE THE LICHESS API, AND FOR THAT REASON THIS BOT WILL BREAK THE TERMS OF SERVICE OF LICHESS.
 (note that I am working on the implementation of the lichess API, so be patient)
+PS: note also that using bots on online chess platforms is considered as cheating.
+
 here: 👉https://lichess.org/@/KrevetkaBot
 ![game](https://user-images.githubusercontent.com/104983707/170866422-873fb47d-0310-46db-b7e9-55fbe7cb5910.gif)
 
