@@ -26,7 +26,6 @@ The file with the GUI.
 
 -online_sources.py:
 This file is a homemade API. The AI can have access to the endgame tablebase syzygy (here👉https://syzygy-tables.info/?adlt=strict&toWww=1&redig=7B4251AD8D5542B89B81810568F3680B), and can also play game against someone on lichess, just by pasting the url of the game(I didn't use the LichessAPI, due to the procrastinization when I must read its documentation and also because I wanted to improve my skills in python, with urllib and pyautogui).
-
 -README.md:
 The file that you are currently reading.
 
