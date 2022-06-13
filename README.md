@@ -38,7 +38,7 @@ here: 👉https://lichess.org/@/KrevetkaBot
 ![game](https://user-images.githubusercontent.com/104983707/170866422-873fb47d-0310-46db-b7e9-55fbe7cb5910.gif)
 
 # Run it!
-Requirements: Python 3.7+, python chess library(here 👉 https://pypi.org/project/chess/?adlt=strict&toWww=1&redig=9D7008CF0644473BB6615ACF0B8959C2), pyautogui(here 👉https://pypi.org/project/PyAutoGUI/?adlt=strict&toWww=1&redig=51B1DB6A75634B18B9BCBF57E7D5375B)
+run this command in the cmd: pip install -r requirements.txt
 
 You must run the main.py file, if you want to play with the GUI(You can play without AI in the command just by running the krevetka.py file). I will also recommend to run it with the python interpreter pypy(here 👉 https://www.pypy.org/), dividing by two the waiting time(maximum 60s without, vs 30s with)).
 
