@@ -2,7 +2,7 @@
 A basic chess engine coded in python, with a GUI that allows you to use other stronger chess engines as Bots.
 
 Screenshot
-![Capture](https://user-images.githubusercontent.com/104983707/166911776-a3860ced-65a5-4b0e-94ce-0bae0b65a930.PNG)
+![chess](https://user-images.githubusercontent.com/104983707/175565331-460224df-c0cf-4618-8e6c-e00ce4897f14.PNG)
 
 
 # Why Krevetka?
