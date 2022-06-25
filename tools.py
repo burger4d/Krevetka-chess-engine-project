@@ -2,16 +2,8 @@ from urllib.request import urlopen
 from time import time, sleep
 from krevetka import *
 import pyautogui
-"""
-import numpy as np
-from fuzzywuzzy import process
-opencv = True
-from pprint import pprint
-try:
-    import cv2
-except:
-    opencv = False
-"""
+
+
 def lichess_board(url):
     t = time()
     try:
@@ -89,7 +81,7 @@ def get_board(turn="white", game="lichess"):
     c = pyautogui.locateOnScreen("images/"+game+"/"+turn+"/board.png", confidence=0.4)
     return c
 
-def get_move(a, b, turn="white", game="lichess"):
+def get_move2(a, b, turn="white", game="lichess"):
     s = pyautogui.screenshot("board.png", (a[0], a[1], b[0]-a[0], b[1]-a[1]))
     onex = s.size[0]//8
     oney = s.size[1]//8
@@ -120,7 +112,56 @@ def get_move(a, b, turn="white", game="lichess"):
         print(start, end)
         return [start, end]
     else:
-        return ["aa", "aa"]
+        return["aa","bb"]
+
+
+def get_move(a, b, turn="white", game="lichess"):
+    im = pyautogui.screenshot("board.png", (a[0], a[1], b[0]-a[0], b[1]-a[1]))
+    onex = im.size[0]//8
+    oney = im.size[1]//8
+    d = {}
+    pixel=None
+    with open("images/"+game+"/pixel.txt", "r") as file:
+        pixel=eval(file.read())
+        file.close()
+    for x in range(8*onex):
+        for y in range(8*oney):
+            #print(x, y)
+            rgb = im.getpixel((x, y))
+            square = str(x//onex)+str(y//oney)
+            if rgb in pixel:
+                if square in d:
+                    d[square] += 1
+                else:
+                    d[square] = 1
+    squares = ["No", "No"]
+    squares_val = [0, 0]
+    print(d)
+    for x in range(8):
+        for y in range(8):
+            square = str(x)+str(y)
+            if square in d:
+                val = d[square]
+                if val > squares_val[0]:
+                    squares_val = [val, squares_val[0]]
+                    squares = [square, squares[0]]
+                elif val > squares_val[1]:
+                    squares_val = [squares_val[0], val]
+                    squares = [squares[0], square]
+    #print(squares)
+    start = squares[0]
+    end = squares[1]
+    alpha = "abcdefgh"
+    num = 8
+    if turn == "black":
+        alpha = alpha[::-1]
+        num = -1
+    print(start, end)
+    if not "No" in squares:
+        start = alpha[int(start[0])]+str(abs(num-int(start[1])))
+        end = alpha[int(end[0])]+str(abs(num-int(end[1])))
+    print(start, end)
+    return [start, end]
 
 
 def get_fen(a, b, turn="white", game="lichess"):
