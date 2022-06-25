@@ -240,7 +240,8 @@ def bot():
         coord_board1 = [BoardPos.left, BoardPos.top]
         coord_board2 = [BoardPos.left+BoardPos.width, BoardPos.top+BoardPos.height]
     else:  # if not found with image recognition, use the mouse to detect the corners
-        sec = 5
+        nsec = 4
+        sec = nsec
         while sec>0:
             w.create_text(320, 320, text=str(sec)+"s for the mouse to be in the\ntop left-hand\ncorner of the board", fill="red", font="Times 20", tag="recognition")
             tk.update()
@@ -248,8 +249,8 @@ def bot():
             sec-=1
             w.itemconfigure("recognition", state="hidden")
         coord_board1 = get_mouse_board()
-        coord_board1[1]-=5
-        sec = 5
+        #coord_board1[1]-=5
+        sec = nsec
         while sec>0:
             w.create_text(320, 320, text=str(sec)+"s for the mouse to be in the\nlower right-hand\ncorner of the board", fill="red", font="Times 20", tag="recognition")
             tk.update()
@@ -361,3 +362,4 @@ Btn2 = Button(tk, text="against AI", overrelief="ridge", command=select2)
 Btn2.pack()
 w.bind_all("<Button-1>", click)
 tk.mainloop()
+
