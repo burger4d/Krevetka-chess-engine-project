@@ -30,6 +30,9 @@ The code of the chess engine.
 -main.py:
 The file with the GUI.
 
+-endgame.mp3:
+Actually, this is the song "hard as steel" from abbynoise, a Non Copyright Song(NCS). You can play it when the game is finished.
+
 -tools.py:
 This file is a homemade API. The AI can have access to the endgame tablebase syzygy (here👉https://syzygy-tables.info/?adlt=strict&toWww=1&redig=7B4251AD8D5542B89B81810568F3680B), and can also play game against someone on lichess, just by giving the position of the other board on the screen (I didn't use the LichessAPI, due to the procrastinization when I must read its documentation and also because I wanted to improve my skills in python, with pyautogui).
 
