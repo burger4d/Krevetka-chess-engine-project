@@ -1,2 +1,4 @@
 chess
+Pillow
 pyautogui
+pyttsx3
