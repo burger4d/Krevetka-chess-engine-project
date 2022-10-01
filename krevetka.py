@@ -1,30 +1,26 @@
 import chess
 import chess.polyglot
+import chess.engine
+import chess.syzygy
 import copy
 import time
 from random import *
 import os
-from online_sources import syzygy
+from tools import *
 win = True
 try:
     from winsound import Beep
 except:
     win = False
-coord = chess.Board()
-    
-"""
-book = {}
-try:
 
-    with open("chess_opening.txt","r") as f:
-        val = f.read()
-        if val=="":
-            val="{}"
-        exec("book="+val)
-        f.close()
-except:
-    pass
-"""
+coord = chess.Board()#"2k5/8/8/8/8/3R4/3K4/8")
+
+
+def new_board():
+    global coord
+    coord = chess.Board()
+
+    
 def draw():
     print("a b c d e f g h\n---------------")
     print(coord)
@@ -57,112 +53,134 @@ def minimax(node, depth, maxplayer):
             value = min(value, minimax(child, depth - 1, True))
     return value
 """
+
+
 def evaluate(board):
-    c=string_coord(board)
+    
+    c = string_coord(board)
     score = 0
-    val = {" ":0, ".":0,"p":-10,"P":10,"n":-32,"N":32,"b":-33,"B":33,"q":-88,"Q":88,"r":-51,"R":51,"k":-1000,"K":1000}
+    val = {" ": 0, ".": 0, "p": -100, "P": 100, "n": -320, "N": 320, "b": -330,
+           "B": 330, "q": -880, "Q": 880, "r": -510, "R": 510, "k": 0, "K": 0}
     for i in c:
-        score += val[i]#difference de materiel
+        score += val[i]  # material difference
     for i in range(64):
-        if board.is_attacked_by(chess.WHITE, i):#liberté de mouvements
-            if i in [27,28,35,36]:
-                score += 2
+        if board.is_attacked_by(chess.WHITE, i):  # possible moves
+            if i in [27, 28, 35, 36]:  # in the center by white
+                score += 20
             else:
-                score += 1
+                score += 10
         if board.is_attacked_by(chess.BLACK, i):
-            if i in [27,28,35,36]:
-                score -= 2
+            if i in [27, 28, 35, 36]:  # in the center by black
+                score -= 20
             else:
-                score -= 1
-    score += c[8:16].count("P")*10 #pion passé 7e rangée
-    score -= c[48:56].count("p")*10
-    score += c[16:24].count("P")*8 #pion 6e rangée
-    score -= c[40:48].count("p")*8
+                score -= 10
+    #score += c[8:16].count("P")*100 #pion passé 7e rangée
+    #score -= c[48:56].count("p")*100
+    #score += c[16:24].count("P")*80 #pion 6e rangée
+    #score -= c[40:48].count("p")*80
     #score += c[:8].count("n")*5
     #score -= c[56:].count("N")*5
     #score += board.is_attacked_by(chess.WHITE, 27)+board.is_attacked_by(chess.WHITE, 28)+board.is_attacked_by(chess.WHITE, 35)+board.is_attacked_by(chess.WHITE, 36)
     #score -= board.is_attacked_by(chess.BLACK, 27)+board.is_attacked_by(chess.BLACK, 28)+board.is_attacked_by(chess.BLACK, 35)+board.is_attacked_by(chess.BLACK, 36)
     if "R" in c[8:16]:
-        score+=20#tour en 7e rangée
+        score += 200  # tour en 7e rangée
     if "r" in c[48:56]:
-        score-=20
+        score -= 200
     if board.is_stalemate() or coord.can_claim_draw():
         score = 0
     elif board.is_checkmate():
-        score = 1000
+        score = 10000
         if board.turn:
             score *= -1
     return score
 
+
 def use_syzygy():
-    return len(coord.piece_map())<=10
+    try:
+        if len(list(coord.legal_moves))>0:#"syzygy/3-4-5" in os.listdir() and len(coord.piece_map())<=5:
+            with chess.syzygy.open_tablebase("syzygy/3-4-5") as tablebase:
+                eval_pos = tablebase.get_dtz(coord)
+                if eval_pos != None:
+                    print("table",tablebase.get_dtz(coord))
+                    print("moves",len(list(coord.legal_moves)))
+                    for move in list(coord.legal_moves):
+                        #print(move)
+                        board=coord.copy()
+                        board.push_san(str(move))
+                        if board.is_checkmate():
+                            return str(move)
+                        print(str(move),tablebase.get_dtz(board))
+                        eval_move=tablebase.get_dtz(board)
+                        if eval_pos==-eval_move+1 and eval_move!=0:
+                            return str(move)
+                else:
+                    return ""
+        return ""
+    except Exception as e:
+        print(e)
+        return ""
 
-def play_random(board):
-    n = str(choice(list(board.legal_moves)))
-    board.push_san(n)
 
-'''
-def play_black2(board):
-    global turn, list_moves, TURN
-    t=time.time()
-    TURN += 0.5
-    turn = 1
-    """
-    if string_coord(coord) in book:
-        move = book[string_coord(coord)]
+def analyse_position(board, engine, time_thinking=1, time_is_depth=False):
+    """TODO"""
+    if time_is_depth:
+        analysis = engine.analyse(board, chess.engine.Limit(depth=time_thinking))
     else:
-    """
-    if True:
-        l=list(map(str,board.legal_moves))
-        n={}
-        for i in l:
-            coord2=copy.copy(board)
-            coord2.push_san(i)
-            N={}
-            if list(map(str,coord2.legal_moves)) == []:
-                n[evaluation(coord2)] = i
-            else:
-                for j in list(map(str,coord2.legal_moves)):
-                    turn = 0
-                    coord3=copy.copy(coord2)
-                    coord3.push_san(j)
-                    M={}
-                    if list(map(str,coord3.legal_moves)) == []:
-                        N[evaluation(coord3)] = j
-                    else:
-                        for k in list(map(str,coord3.legal_moves)):
-                            turn = 1
-                            coord4=copy.copy(coord3)
-                            coord4.push_san(k)
-                            M[evaluation(coord4)] = k
-                        N[min(M)]=j
-                        
-                n[max(N)]=i
-            move = n[min(n)]
-    turn = 1
-    board.push_san(move)
-    list_moves.append(move)
-    print(time.time() - t)
-'''
+        analysis = engine.analyse(board, chess.engine.Limit(time=time_thinking))
+    return {"score": analysis["score"],
+            "moves": analysis["pv"],
+            "depth": analysis["depth"]}
 
-def play_black3(board, evaluation=evaluate):
-    t = time.time()
-    actual_coord = evaluation(coord)
+
+def play_engine(board, engine, book="Nothing", time_thinking=1, time_is_depth=False):
+    """using other chess engines"""
+    move = play_auto(board, book)
+    if move != None:
+        board.push_san(move)
+    else:
+        if time_is_depth:
+            result = engine.play(board, chess.engine.Limit(depth=time_thinking))
+        else:
+            result = engine.play(board, chess.engine.Limit(time=time_thinking))
+        board.push(result.move)
+        draw()
+
+
+def play_auto(board, book="Nothing"):
+    """playing automatically some moves"""
     opening_moves = []
-    if "baron30.bin" in os.listdir():
-        with chess.polyglot.open_reader("baron30.bin") as reader:
-            for entry in reader.find_all(coord):
-                opening_moves.append(entry.move)
+    move = None
+    print(book)
+    if "polyglot" in os.listdir():
+        if book in os.listdir("polyglot"):
+            with chess.polyglot.open_reader("polyglot/"+book) as reader:
+                for entry in reader.find_all(board):
+                    opening_moves.append(entry.move)
     possible_move = ""
-    if len(board.move_stack) == 1:
-        move = str(board.move_stack)
-    elif use_syzygy():#fin de partie deja connue
-        possible_move = syzygy(board.fen())
+    if len(list(board.legal_moves)) == 1:
+        move = str(list(board.legal_moves)[0])
+    elif 1==1:  # end of game already known
+        possible_move = use_syzygy()
     if len(opening_moves)>0:
         move = str(choice(opening_moves))
     elif possible_move!="":
-        move = possible_move
-    else:
+        move = str(possible_move)
+    return move
+
+
+def play_random(board, book="baron30.bin"):
+    """playing random moves"""
+    n = play_auto(board, book)
+    if n is None:
+        n = str(choice(list(board.legal_moves)))
+    board.push_san(str(n))
+
+
+def play_black3(board, book="baron30.bin", evaluation=evaluate):
+    t = time.time()
+    opening_moves = []
+    move = play_auto(board, book)
+    if move is None:
         l = list(map(str, board.legal_moves))
         n = {}
         for i in l:
@@ -192,7 +210,7 @@ def play_black3(board, evaluation=evaluate):
                         N[min(M)]=j
                 n[max(N)]=i
             move = n[min(n)]
-    board.push_san(move)
+    board.push_san(str(move))
     if win:
         Beep(400, 100)
     print(str(board.move_stack[-1]))
@@ -200,35 +218,17 @@ def play_black3(board, evaluation=evaluate):
     print("evaluation:",evaluation(board))
 
 
-def play_white3(board, evaluation=evaluate):
+def play_white3(board, book="baron30.bin", evaluation=evaluate):
     t = time.time()
-    actual_coord = evaluation(coord)
-    opening_moves = []
-    if "baron30.bin" in os.listdir():
-        with chess.polyglot.open_reader("baron30.bin") as reader:
-            for entry in reader.find_all(coord):
-                opening_moves.append(entry.move)
-    move = ""
-    possible_move = ""
-    possible_move2 = find_pgn(board.fen())
-    if len(board.move_stack) == 1:
-        move = str(board.move_stack)
-    elif use_syzygy():
-        possible_move = syzygy(board.fen())
-    if len(opening_moves)>0:
-        move = str(choice(opening_moves))
-    elif possible_move!="":
-        move = possible_move
-    elif possible_move2!=None:
-        move = possible_move2
-    else:
-        l=list(map(str,board.legal_moves))
+    move = play_auto(board, book)
+    if move is None:
+        l = list(map(str,board.legal_moves))
         n={}
         for i in l:
             coord2=copy.copy(board)
             coord2.push_san(i)
-            N={}
-            l2=list(map(str,coord2.legal_moves))
+            N = {}
+            l2 = list(map(str,coord2.legal_moves))
             if l2 == []:
                 e2=evaluation(coord2)
                 n[e2] = i
@@ -237,17 +237,18 @@ def play_white3(board, evaluation=evaluate):
                 for j in l2:
                     coord3=copy.copy(coord2)
                     coord3.push_san(j)
-                    M={}
-                    l3=list(map(str,coord3.legal_moves))
+                    M = {}
+                    l3 = list(map(str,coord3.legal_moves))
                     if l3 == []:
                         N[evaluation(coord3)] = j
                     else:
                         for k in l3:
                             coord4=copy.copy(coord3)
                             coord4.push_san(k)
-                            e4=evaluation(coord4)
+                            e4 = evaluation(coord4)
                             M[e4] = k
-                            if evaluate(coord4) == 1000:break
+                            if evaluate(coord4) == 1000:
+                                break
                         N[max(M)]=j
                 n[min(N)]=i
             move = n[max(n)]
@@ -258,6 +259,7 @@ def play_white3(board, evaluation=evaluate):
     print("time",time.time() - t,"sec")
     print("evaluation:",evaluation(board))
 
+
 def play_human(move):
     try:
         coord.push_san(move)
@@ -266,6 +268,7 @@ def play_human(move):
         print(move)
     except ValueError:
         pass
+
 
 def deep_eval(board, depth=3, number=100):
     score = 0
@@ -279,28 +282,11 @@ def deep_eval(board, depth=3, number=100):
         score += evaluate(child)
     return score
 
-def play_white2(board, evaluation=evaluate):
+
+def play_white2(board, book="baron30.bin", evaluation=evaluate):
     t = time.time()
-    actual_coord = evaluation(coord)
-    opening_moves = []
-    if "baron30.bin" in os.listdir():
-        with chess.polyglot.open_reader("baron30.bin") as reader:
-            for entry in reader.find_all(coord):
-                opening_moves.append(entry.move)
-    move = ""
-    possible_move = ""
-    possible_move2 = find_pgn(board.fen())
-    if len(board.move_stack) == 1:
-        move = str(board.move_stack)
-    elif use_syzygy():
-        possible_move = syzygy(board.fen())
-    if len(opening_moves)>0:
-        move = str(choice(opening_moves))
-    elif possible_move!="":
-        move = possible_move
-    elif possible_move2!=None:
-        move = possible_move2
-    else:
+    move = play_auto(board, book)
+    if move is None:
         l=list(map(str,board.legal_moves))
         n={}
         for i in l:
@@ -328,24 +314,11 @@ def play_white2(board, evaluation=evaluate):
     print("time",time.time() - t,"sec")
     print("evaluation:",evaluation(board))
 
-def play_black2(board, evaluation=evaluate):
+
+def play_black2(board, book="baron30.bin", evaluation=evaluate):
     t = time.time()
-    actual_coord = evaluation(coord)
-    opening_moves = []
-    if "baron30.bin" in os.listdir():
-        with chess.polyglot.open_reader("baron30.bin") as reader:
-            for entry in reader.find_all(coord):
-                opening_moves.append(entry.move)
-    possible_move = ""
-    if len(board.move_stack) == 1:
-        move = str(board.move_stack)
-    elif use_syzygy():#fin de partie deja connue
-        possible_move = syzygy(board.fen())
-    if len(opening_moves)>0:
-        move = str(choice(opening_moves))
-    elif possible_move!="":
-        move = possible_move
-    else:
+    move = play_auto(board, book)
+    if move is None:
         l = list(map(str, board.legal_moves))
         n = {}
         for i in l:
@@ -373,28 +346,10 @@ def play_black2(board, evaluation=evaluate):
     print("time:",time.time() - t,"sec")
     print("evaluation:",evaluation(board))
 
-def play_white1(board, evaluation=evaluate):
+def play_white1(board, book="baron30.bin", evaluation=evaluate):
     t = time.time()
-    actual_coord = evaluate(coord)
-    opening_moves = []
-    if "baron30.bin" in os.listdir():
-        with chess.polyglot.open_reader("baron30.bin") as reader:
-            for entry in reader.find_all(coord):
-                opening_moves.append(entry.move)
-    move = ""
-    possible_move = ""
-    possible_move2 = find_pgn(board.fen())
-    if len(board.move_stack) == 1:
-        move = str(board.move_stack)
-    elif use_syzygy():
-        possible_move = syzygy(board.fen())
-    if len(opening_moves)>0:
-        move = str(choice(opening_moves))
-    elif possible_move!="":
-        move = possible_move
-    elif possible_move2!=None:
-        move = possible_move2
-    else:
+    move = play_auto(board, book)
+    if move is None:
         l=list(map(str,board.legal_moves))
         n={}
         for i in l:
@@ -409,28 +364,11 @@ def play_white1(board, evaluation=evaluate):
     print("time",time.time() - t,"sec")
     print("evaluation:",evaluation(board))
 
-def play_black1(board, evaluation=evaluate):
+
+def play_black1(board, book="Nothing", evaluation=evaluate):
     t = time.time()
-    actual_coord = evaluate(coord)
-    opening_moves = []
-    if "baron30.bin" in os.listdir():
-        with chess.polyglot.open_reader("baron30.bin") as reader:
-            for entry in reader.find_all(coord):
-                opening_moves.append(entry.move)
-    move = ""
-    possible_move = ""
-    possible_move2 = find_pgn(board.fen())
-    if len(board.move_stack) == 1:
-        move = str(board.move_stack)
-    elif use_syzygy():
-        possible_move = syzygy(board.fen())
-    if len(opening_moves)>0:
-        move = str(choice(opening_moves))
-    elif possible_move!="":
-        move = possible_move
-    elif possible_move2!=None:
-        move = possible_move2
-    else:
+    move = play_auto(board, book)
+    if move is None:
         l=list(map(str,board.legal_moves))
         n={}
         for i in l:
@@ -445,26 +383,29 @@ def play_black1(board, evaluation=evaluate):
     print("time",time.time() - t,"sec")
     print("evaluation:",evaluation(board))
 
-def play_white(board, lvl=3):
-    if lvl == 0:
-        play_random(board)
-    elif lvl == 1:
-        play_white1(board)
-    elif lvl == 2:
-        play_white2(board)
-    else:
-        play_white3(board)
 
-def play_black(board, lvl=3):
+def play_white(board, lvl, book):
     if lvl == 0:
-        play_random(board)
+        play_random(board, book)
     elif lvl == 1:
-        play_black1(board)
+        play_white1(board, book)
     elif lvl == 2:
-        play_black2(board)
+        play_white2(board, book)
     else:
-        play_black3(board)
-    
+        play_white3(board, book)
+
+
+def play_black(board, lvl, book):
+    if lvl == 0:
+        play_random(board, book)
+    elif lvl == 1:
+        play_black1(board, book)
+    elif lvl == 2:
+        play_black2(board, book)
+    else:
+        play_black3(board, book)
+
+
 if __name__ == "__main__":
     while True not in [coord.is_checkmate(), coord.is_stalemate()]:
         draw()
@@ -483,3 +424,4 @@ if __name__ == "__main__":
         print("DRAW")
     else:
         print("Checkmate")
+
