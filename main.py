@@ -5,7 +5,6 @@ from tools import *
 import sys
 import pyttsx3
 
-
 option_sound = True
 voice = pyttsx3.init()
 
@@ -17,7 +16,7 @@ def speak(text):
         voice.runAndWait()
 
 
-def verification():
+def verification(coord):
     """verify if there is a checkmate, a draw..."""
     global phase
     if coord.is_checkmate():
@@ -97,7 +96,7 @@ def Draw(turn):
                               font="Times 40",
                               fill="#666666",
                               tag="pieces")
-    verification()
+    verification(coord)
     if coord.move_stack!=[] and last_move!=coord.move_stack[-1] and music:
         speak(coord.move_stack[-1])
         last_move=coord.move_stack[-1]
@@ -106,7 +105,17 @@ def Draw(turn):
 
 def select0():
     """in all cases"""
-    global Btn1, Btn2, click_move, music_opt, music
+    global label, Btn1, Btn2, click_move, music_opt, music, textFen, fen_starter, coord
+    try:
+        label.destroy()
+    except Exception as err:
+        print(err)
+    try:
+        fen_starter = textFen.get()
+        coord.set_board_fen(fen_starter)
+        textFen.destroy()
+    except Exception as err:
+        print("invalide fen+"+str(err))
     Btn1.destroy()
     Btn2.destroy()
     Draw(player)
@@ -171,6 +180,7 @@ def select3():
         level.pack()
         level.set(2)
     else:
+        """
         EngineOption = StringVar()
         engine_opt = Checkbutton(tk,
                             text="play by depth instead of time",
@@ -179,6 +189,7 @@ def select3():
                             offvalue="off")
         EngineOption.set("on")
         engine_opt.pack()
+        
         if time_is_depth:
             time_thinking = Scale(tk, orient="horizontal", from_=1, to=50, resolution=1, tickinterval=5, length=500, label="depth")
             time_thinking.set(5)
@@ -187,6 +198,7 @@ def select3():
             time_thinking = Scale(tk, orient="horizontal", from_=0.1, to=10, resolution=0.1, tickinterval=1, length=400, label="time thinking")
             time_thinking.set(1)
             time_thinking.pack()
+        """
         name = "engines/"+sys.platform+"/"
         engine = chess.engine.SimpleEngine.popen_uci(name+Engine)
     w.create_text(320, 320, text="About the chess engine...", font="Times 20", fill="green", tag="pieces")
@@ -197,7 +209,14 @@ def select3():
     if engine!="Krevetka":
         Btn3 = Button(tk, text="chess board analysis", command=select3a)
         Btn3.pack()
-
+        if time_is_depth:
+            time_thinking = Scale(tk, orient="horizontal", from_=1, to=50, resolution=1, tickinterval=5, length=500, label="depth")
+            time_thinking.set(5)
+            time_thinking.pack()
+        else:
+            time_thinking = Scale(tk, orient="horizontal", from_=0.1, to=10, resolution=0.1, tickinterval=1, length=400, label="time thinking")
+            time_thinking.set(1)
+            time_thinking.pack()
 
 def select3b():
     """using AI -> ok -> bot"""
@@ -231,10 +250,11 @@ def select4():
     """using AI -> ok -> bot or play"""
     global Btn1, Btn2, Btn3, level, lvl, opt, variable, time_thinking, time2think, engine_opt
     if engine!="Krevetka":
+        pass
         time2think = time_thinking.get()
         time_thinking.destroy()
-        engine_opt.destroy()
-        engine_opt = None
+        #engine_opt.destroy()
+        #engine_opt = None
     try:
         lvl = level.get()
         level.destroy()
@@ -292,7 +312,7 @@ def select5():
         WriteOption.set("off")
         write_opt.pack()
         w.create_rectangle(0, 0, 640, 640, fill="black", tag="pieces")
-        w.create_text(320, 320, text="Choose the website\n(make sure the chessboard is fully visible)", font="Times 20", fill="green", tag="pieces")
+        w.create_text(320, 320, text="Choose the website\n(make sure the chessboard is fully visible)\n\nTip: if you want to turn off the bot\nduring the game, put the\nmouse in the top-left corner", font="Times 20", fill="green", tag="pieces")
         websites = ["detect automatically(slower)"]
         if "images" in os.listdir():
             websites += os.listdir("images")
@@ -332,6 +352,7 @@ def select6():
 def bot():
     """bot is coming..."""
     global website
+    error =False
     if website=="detect automatically(slower)":
         websites=[]
         if "images" in os.listdir():
@@ -351,7 +372,7 @@ def bot():
                             print(website)
                             raise TypeError
             except:
-                break
+                error = True
     try:
         t=time.time()
         coord_board1=find_first_pixel(website)
@@ -360,9 +381,12 @@ def bot():
         print(coord_board2)
         print(time.time()-t)
         t=time.time()
+        if error:
+            raise TypeError
         
     except:  # if not found with image recognition, use the mouse to detect the corners
         nsec = 4
+        pyautogui.alert(str(nsec)+"s for the mouse to be in the top left-hand corner of the board")
         sec = nsec
         Draw(player2)
         while sec>0:
@@ -373,6 +397,7 @@ def bot():
             w.itemconfigure("recognition", state="hidden")
         coord_board1 = get_mouse_board()
         sec = nsec
+        pyautogui.alert(str(nsec)+"s for the mouse to be in the lower right-hand corner of the board")
         while sec>0:
             w.create_text(320, 320, text=str(sec)+"s for the mouse to be in the\nlower right-hand\ncorner of the board", fill="red", font="Times 20", tag="recognition")
             tk.update()
@@ -392,7 +417,7 @@ def bot():
         else:
             play_mouse(str(coord.move_stack[-1]), coord_board, player2=="black")
     while True:
-        if coord.is_checkmate():
+        if coord.is_checkmate() or get_mouse_board() == [0, 0]:
             break
         if (coord.turn and player == "white") or (not coord.turn and player == "black"):  # player's turn
             move0 = get_move(coord_board1, coord_board2, player2, website)
@@ -561,7 +586,7 @@ def click(event):
                         play_white(coord, lvl, book)
                     else:
                         play_engine(coord, engine, book, time2think, time_is_depth)
-                verification()
+                verification(coord)
                 Draw(player)
         else:
             if player == "white":
@@ -575,7 +600,7 @@ def click(event):
 
 
 def main():
-    global engine_opt, time_is_depth, ok, last_move, time2think, MusicOption, music_opt, Btn1, Btn2, tk, w, mode, click_move, player, engine, book, coord, last_choice
+    global label, fen_starter, textFen, engine_opt, time_is_depth, ok, last_move, time2think, MusicOption, music_opt, Btn1, Btn2, tk, w, mode, click_move, player, engine, book, coord, last_choice
     while len(coord.move_stack)>0:
             coord.pop()
     try:
@@ -583,13 +608,13 @@ def main():
         engine.quit()
     except:
         pass
-
+    label = None #photo
     last_choice = "off"
     engine_opt = None #widget for engine option
     ok = False  # if we can activate the function Draw
     time2think = 1.0  # time thinking or depth, it depends of the boolean time_is_depth
     last_move = ""  # explicit
-    time_is_depth = True  #the variable "time2think" is depth, not time
+    time_is_depth = False  #the variable "time2think" is depth, not time
     mode = "start"  # start: nothing, normal: human vs human, play: AI vs human, bot: AI/you vs another person, analysis: explicit
     click_move = ""  # the squares where you click
     player = "white"
@@ -598,6 +623,7 @@ def main():
     
     tk = Tk()
     tk.title("Chess")
+    tk.resizable(False, False)
     tk.configure(cursor = "hand2")
     w = Canvas(tk,
                width=640,
@@ -620,20 +646,28 @@ def main():
                                j*80,
                                fill="#"+str(hex(181))[2:]+str(hex(136))[2:]+str(hex(99))[2:])
     w.create_rectangle(0, 0, 640, 640, fill="black", tag="pieces")
-    w.create_text(320,
-                  320,
-                  text="''I don't Believe in psychology,\nI believe in good moves''\nBobby Fischer\n"+chr(9818)+chr(9819)+chr(9820)+chr(9821)+chr(9822)+chr(9823),
-                  font="Times 20",
-                  fill="red",
-                  tag="pieces")
     MusicOption = StringVar()
     music_opt = Checkbutton(tk,
                             text="music option (tells the moves, and plays a song when it is the end of the game)",
                             variable=MusicOption,
                             onvalue="on",
                             offvalue="off")
+    if "chess.gif" in os.listdir():
+        photo = PhotoImage(file="chess.gif")
+        label = Label(image=photo)
+        label.place(x=0, y=0)
+    else:
+        w.create_text(320,
+                      320,
+                      text="''I don't Believe in psychology,\nI believe in good moves''\nBobby Fischer\n"+chr(9818)+chr(9819)+chr(9820)+chr(9821)+chr(9822)+chr(9823),
+                      font="Times 20",
+                      fill="red",
+                      tag="pieces")
     MusicOption.set("off")
     music_opt.pack()
+    textFen = Entry(tk, width=50)
+    textFen.insert(0, "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR")
+    textFen.pack()
     Btn1 = Button(tk, text="human vs human", overrelief="ridge", command=select1)
     Btn1.pack()
     Btn2 = Button(tk, text="against AI", overrelief="ridge", command=select2)
@@ -644,4 +678,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
