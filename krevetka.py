@@ -13,7 +13,7 @@ try:
 except:
     win = False
 
-coord = chess.Board()#"2k5/8/8/8/8/3R4/3K4/8")
+coord = chess.Board()
 
 
 def new_board():
@@ -54,7 +54,9 @@ def minimax(node, depth, maxplayer):
     return value
 """
 
-
+def change_fen(fen):
+    global coord
+    coord = chess.Board(fen)
 def evaluate(board):
     
     c = string_coord(board)
@@ -95,22 +97,22 @@ def evaluate(board):
     return score
 
 
-def use_syzygy():
+def use_syzygy(board):
     try:
-        if len(list(coord.legal_moves))>0:#"syzygy/3-4-5" in os.listdir() and len(coord.piece_map())<=5:
+        if len(list(board.legal_moves))>0:#"syzygy/3-4-5" in os.listdir() and len(coord.piece_map())<=5:
             with chess.syzygy.open_tablebase("syzygy/3-4-5") as tablebase:
                 eval_pos = tablebase.get_dtz(coord)
                 if eval_pos != None:
                     print("table",tablebase.get_dtz(coord))
-                    print("moves",len(list(coord.legal_moves)))
-                    for move in list(coord.legal_moves):
+                    print("moves",len(list(board.legal_moves)))
+                    for move in list(board.legal_moves):
                         #print(move)
-                        board=coord.copy()
-                        board.push_san(str(move))
-                        if board.is_checkmate():
+                        Board=coord.copy()
+                        Board.push_san(str(move))
+                        if Board.is_checkmate():
                             return str(move)
-                        print(str(move),tablebase.get_dtz(board))
-                        eval_move=tablebase.get_dtz(board)
+                        print(str(move),tablebase.get_dtz(Board))
+                        eval_move=tablebase.get_dtz(Board)
                         if eval_pos==-eval_move+1 and eval_move!=0:
                             return str(move)
                 else:
@@ -160,7 +162,7 @@ def play_auto(board, book="Nothing"):
     if len(list(board.legal_moves)) == 1:
         move = str(list(board.legal_moves)[0])
     elif 1==1:  # end of game already known
-        possible_move = use_syzygy()
+        possible_move = use_syzygy(board)
     if len(opening_moves)>0:
         move = str(choice(opening_moves))
     elif possible_move!="":
@@ -405,7 +407,7 @@ def play_black(board, lvl, book):
     else:
         play_black3(board, book)
 
-
+#coord = chess.Board()
 if __name__ == "__main__":
     while True not in [coord.is_checkmate(), coord.is_stalemate()]:
         draw()
@@ -424,4 +426,3 @@ if __name__ == "__main__":
         print("DRAW")
     else:
         print("Checkmate")
-
