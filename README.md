@@ -8,13 +8,15 @@ A basic chess engine coded in python, with a GUI that allows you to use other st
 
 
 # Why Krevetka?
-The name "Krevetka" means 🍤"shrimp"🦐.
-It is in the same spirit like other chess engines, for example Rybka or stockfish (note that "Rybka" means "fish"🐟)
+The name "Krevetka" means 🍤"shrimp"🦐 in russian. The use of a marine animal is in the spirit of great engines such as Stockfish, Rybka.
+
+# About the "image recognition":
+The software takes a screenshot, and will search pixel by pixel the colors of the chessboard. After that, the program will know where is the chessboard on the screen(make sure it is fully visible), and will start to play. The program will see for the two squares with a modified color(that means a piece was moved) and will deduce what was the las move. This also means that you can change the pieces if you want, the size of the chessboard, but not the colors.
 
 # The algorithm:
-Wikipedia's definition: Minimax is a decision rule used in artificial intelligence, decision theory, game theory, statistics, and philosophy for minimizing the possible loss for a worst case (maximum loss) scenario. When dealing with gains, it is referred to as "maximin"—to maximize the minimum gain. Originally formulated for n-player zero-sum game theory, covering both the cases where players take alternate moves and those where they make simultaneous moves, it has also been extended to more complex games and to general decision-making in the presence of uncertainty.
+The minimax algorithm is an algorithm that will explore all the positions with a given depth. It uses a recursive function that will evaluate each position and will find the best one.
+Krevetka uses this algorithm, with a depth of 3 at maximun. I didn't do the algorithm in its recursive version, but only with some "for" loops(faster in python than the recursive function).
 
-Krevetka uses this algorithm, with a depth of 3. I didn't do the algorithm in its recursive version, but only with some "for" loops(faster).
 # Folders:
 -engines:
 The other chess engines that you can use(you must put ONLY the executable files). Actually, there is only the free version of Komodo(here: https://komodochess.com/downloads.htm). For sure, you can also add other chess engines, like Stockfish on https://stockfishchess.org/download/(I didn't add it because the file was larger than 25MB).
@@ -36,7 +38,7 @@ The file with the GUI.
 Actually, this is the song "hard as steel" from abbynoise, a Non Copyright Song(NCS). You can play it when the game is finished.
 
 -tools.py:
-This file is a homemade API. The AI can have access to the endgame tablebase syzygy (here👉https://syzygy-tables.info/?adlt=strict&toWww=1&redig=7B4251AD8D5542B89B81810568F3680B), and can also play game against someone on lichess, just by giving the position of the other board on the screen (I didn't use the LichessAPI, due to the procrastinization when I must read its documentation and also because I wanted to improve my skills in python, with pyautogui).
+This file will provide all the "tools" to analyze the screen. It will take screenshots, find the position, and will move the mouse to play.
 
 -README.md:
 The file that you are currently reading.
@@ -46,7 +48,7 @@ The file that you are currently reading.
 (note that I am working on the implementation of the lichess API, so be patient)
 PS: note also that using bots on online chess platforms is considered as cheating.
 
-here: 👉https://lichess.org/@/KrevetkaBot
+here: 👉https://lichess.org/@/KrevetkaBot (actually the bot was banned)
 ![game](https://user-images.githubusercontent.com/104983707/170866422-873fb47d-0310-46db-b7e9-55fbe7cb5910.gif)
 
 # Run it!
