@@ -11,7 +11,9 @@ A basic chess engine coded in python, with a GUI that allows you to use other st
 The name "Krevetka" means 🍤"shrimp"🦐 in russian. The use of a marine animal is in the spirit of great engines such as Stockfish, Rybka.
 
 # About the "image recognition":
-The software takes a screenshot, and will search pixel by pixel the colors of the chessboard. After that, the program will know where is the chessboard on the screen(make sure it is fully visible), and will start to play. The program will see for the two squares with a modified color(that means a piece was moved) and will deduce what was the las move. This also means that you can change the pieces if you want, the size of the chessboard, but not the colors.
+The software takes a screenshot, and will search pixel by pixel the colors of the chessboard. After that, the program will know where is the chessboard on the screen(make sure it is fully visible), and will start to play. The program will see for the two squares with a modified color(that means a piece was moved) and will deduce what was the las move. This also means that you can change the pieces if you want, the size of the chessboard, but not the colors (and do not move the chessboard during the game).
+
+For the moment it supports the websites lichess, chess.com, chessfriends and chess24.
 
 # The algorithm:
 The minimax algorithm is an algorithm that will explore all the positions with a given depth. It uses a recursive function that will evaluate each position and will find the best one.
