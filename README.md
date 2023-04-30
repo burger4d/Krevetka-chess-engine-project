@@ -14,10 +14,10 @@ The name "Krevetka" means 🍤"shrimp"🦐 in russian. The use of a marine anima
 The software captures a screenshot and searches each individual pixel for colors belonging to the chessboard. It then determines the chessboard's location on the screen, ensuring its complete visibility, and begins playing. The program continually scans for any color modifications on two squares, indicating a piece has been moved, and deduces the last move made. While you can change pieces, the program requires the colors to remain the same, and moving the chessboard or altering its size during the game is forbidden.
 
 Currently, the software is compatible with the following websites: 
--lichess
--chess.com
--chessfriends
--chess24
+- lichess
+- chess.com
+- chessfriends
+- chess24
 
 # The Algorithm:
 The minimax algorithm explores every possible position up to a predetermined depth. It executes a recursive function which evaluates each position and determines the optimal move. Krevetka uses this algorithm with a maximum depth of three. Instead of a recursive function, I implemented it using "for" loops, as these tend to be quicker in Python.
@@ -36,7 +36,7 @@ The file displaying the graphical user interface.
 This playlist is "Hard as Steel" by Abbynoise, and it is a Non-Copyright Song(NCS). It can be played after the game has ended.
 - tools.py: 
 Provides necessary "tools" for analyzing the screen, such as taking screenshots, finding positions, and moving the mouse to play.
--README.md: 
+- README.md: 
 The file that you are currently reading.
 
 # Lichess account:
