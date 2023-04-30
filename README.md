@@ -4,7 +4,7 @@
 
 ![chess](https://user-images.githubusercontent.com/104983707/175565331-460224df-c0cf-4618-8e6c-e00ce4897f14.PNG)
 
-A basic chess engine coded in python, with a GUI that allows you to use other stronger chess engines as Bots.
+A basic chess engine coded in python, with a GUI that enables you to utilize more advanced chess engines as bots.
 
 
 # Why Krevetka?
