@@ -8,40 +8,30 @@ A basic chess engine coded in python, with a GUI that allows you to use other st
 
 
 # Why Krevetka?
-The name "Krevetka" means 🍤"shrimp"🦐 in russian. The use of a marine animal is in the spirit of great engines such as Stockfish, Rybka.
+The name "Krevetka" means 🍤"shrimp"🦐 in russian. The use of a marine animal is in the spirit of great engines such as Stockfish, or Rybka.
 
-# About the "image recognition":
-The software takes a screenshot, and will search pixel by pixel the colors of the chessboard. After that, the program will know where is the chessboard on the screen(make sure it is fully visible), and will start to play. The program will see for the two squares with a modified color(that means a piece was moved) and will deduce what was the las move. This also means that you can change the pieces if you want, the size of the chessboard, but not the colors (and do not move the chessboard during the game).
+# The "image recognition"
+The software captures a screenshot and searches each individual pixel for colors belonging to the chessboard. It then determines the chessboard's location on the screen, ensuring its complete visibility, and begins playing. The program continually scans for any color modifications on two squares, indicating a piece has been moved, and deduces the last move made. While you can alter the size of the chessboard and exchange pieces, the program requires the colors to remain the same, and moving the chessboard during gameplay is forbidden.
 
-For the moment it supports the websites lichess, chess.com, chessfriends and chess24.
+Currently, the software is compatible with the following websites: lichess, chess.com, chessfriends, and chess24.
 
-# The algorithm:
-The minimax algorithm is an algorithm that will explore all the positions with a given depth. It uses a recursive function that will evaluate each position and will find the best one.
-Krevetka uses this algorithm, with a depth of 3 at maximun. I didn't do the algorithm in its recursive version, but only with some "for" loops(faster in python than the recursive function).
+# The Algorithm:
+The minimax algorithm explores every possible position up to a predetermined depth. It executes a recursive function which evaluates each position and determines the optimal move. Krevetka uses this algorithm with a maximum depth of three. Instead of a recursive function, I implemented it using "for" loops, as these tend to be quicker in Python.
 
 # Folders:
--engines:
-The other chess engines that you can use(you must put ONLY the executable files). Actually, there is only the free version of Komodo(here: https://komodochess.com/downloads.htm). For sure, you can also add other chess engines, like Stockfish on https://stockfishchess.org/download/(I didn't add it because the file was larger than 25MB).
-
--images:
-The rgb values of the "yellow" squares on each website.
-
--polyglot:
-The different polyglot chess opening books found here: https://chess.stackexchange.com/questions/35448/looking-for-polyglot-opening-books?adlt=strict&toWww=1&redig=95BF7929665C40C0966EB2870AA78E90
+- engines: Other chess engines which can be used (Please only include the executable files). You may find some useful engines here: https://chess-bot.com/blog/chess-engines-download.html
+- images: The RGB values of the highlighted squares on each of the aforementioned websites. For illustration, if you play e2e4, both e2 and e4 will be illuminated.
+- polyglot: Various polyglot chess opening books available for selection here: https://chess.stackexchange.com/questions/35448/looking-for-polyglot-opening-books?adlt=strict&toWww=1&redig=95BF7929665C40C0966EB2870AA78E90
 
 # Files:
--krevetka.py:
-The code of the chess engine.
-
--main.py:
-The file with the GUI.
-
--endgame.mp3:
-Actually, this is the song "hard as steel" from abbynoise, a Non Copyright Song(NCS). You can play it when the game is finished.
-
--tools.py:
-This file will provide all the "tools" to analyze the screen. It will take screenshots, find the position, and will move the mouse to play.
-
+- krevetka.py:
+Code for the chess engine.
+- main.py:
+The file displaying the graphical user interface.
+- endgame.mp3: 
+This playlist is "Hard as Steel" by Abbynoise, and it is a Non-Copyright Song(NCS). It can be played after the game has ended.
+- tools.py: 
+Provides necessary "tools" for analyzing the screen, such as taking screenshots, finding positions, and moving the mouse to play.
 -README.md:
 The file that you are currently reading.
 
