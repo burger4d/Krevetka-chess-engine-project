@@ -24,7 +24,7 @@ The minimax algorithm explores every possible position up to a predetermined dep
 
 # Folders:
 - engines: Other chess engines which can be used (Please only include the executable files). You may find some useful engines here: https://chess-bot.com/blog/chess-engines-download.html
-- images: The RGB values of the highlighted squares on each of the aforementioned websites. For illustration, if you play e2e4, both e2 and e4 will be illuminated.
+- images: The RGB values of the highlighted squares on each websites. For illustration, if you play e2e4, both e2 and e4 will be illuminated.
 - polyglot: Various polyglot chess opening books available for selection here: https://chess.stackexchange.com/questions/35448/looking-for-polyglot-opening-books?adlt=strict&toWww=1&redig=95BF7929665C40C0966EB2870AA78E90
 
 # Files:
