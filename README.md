@@ -4,11 +4,11 @@
 
 ![chess](https://user-images.githubusercontent.com/104983707/175565331-460224df-c0cf-4618-8e6c-e00ce4897f14.PNG)
 
-A basic chess engine coded in python, with a GUI that enables you to utilize more advanced chess engines as bots.
+A basic chess engine coded in python, with a GUI that enables you to use more advanced chess engines as bots.
 
 
 # Why Krevetka?
-The name "Krevetka" means 🍤"shrimp"🦐 in russian. The use of a marine animal is in the spirit of great engines such as Stockfish, or Rybka.
+The name "Krevetka" means 🍤"shrimp"🦐 in russian. The use of sea-related animal names is in the spirit of great engines such as Stockfish, or Rybka.
 
 # The "image recognition"
 The software captures a screenshot and searches each individual pixel for colors belonging to the chessboard. It then determines the chessboard's location on the screen, ensuring its complete visibility, and begins playing. The program continually scans for any color modifications on two squares, indicating a piece has been moved, and deduces the last move made. While you can change pieces, the program requires the colors to remain the same, and moving the chessboard or altering its size during the game is forbidden.
