@@ -8,7 +8,7 @@ A basic chess engine coded in python, with a GUI that enables you to use more ad
 
 
 # Why Krevetka?
-The name "Krevetka" means 🍤"shrimp"🦐 in russian. The use of sea-related animal names is in the spirit of great engines such as Stockfish, or Rybka.
+The name "Krevetka" means "shrimp" in russian. The use of sea-related animal names is in the spirit of great engines such as Stockfish, or Rybka.
 
 # The "image recognition"
 The software captures a screenshot and searches each individual pixel for colors belonging to the chessboard. It then determines the chessboard's location on the screen, ensuring its complete visibility, and begins playing. The program continually scans for any color modifications on two squares, indicating a piece has been moved, and deduces the last move made. While you can change pieces, the program requires the colors to remain the same, and moving the chessboard or altering its size during the game is forbidden.
@@ -44,13 +44,6 @@ The file that you are currently reading.
 (note that I am working on the implementation of the lichess API, so be patient)
 PS: note also that using bots on online chess platforms is considered as cheating.
 
-here: 👉https://lichess.org/@/KrevetkaBot (actually the bot was banned)
 ![game](https://user-images.githubusercontent.com/104983707/170866422-873fb47d-0310-46db-b7e9-55fbe7cb5910.gif)
 
-# Run it!
-run this command in the cmd: pip install -r requirements.txt
 
-You must run the main.py file, if you want to play with the GUI(You can play without AI in the command just by running the krevetka.py file). I will also recommend to run it with the python interpreter pypy(here 👉 https://www.pypy.org/), dividing by two the waiting time(maximum 60s without, vs 30s with)).
-
-
-(PS: There is a lot of code that is redundant and there are tons of improvements that can be made.)
