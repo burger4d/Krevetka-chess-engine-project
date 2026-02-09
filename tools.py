@@ -6,12 +6,16 @@ from random import *
 
 
 def get_mouse_board():
+    """get the mouse position"""
+    
     x, y = pyautogui.position()
     print("mouse", x, y)
     return [x, y]
 
 
 def play_mouse(move, coord_mouse, turn):
+    """move the mouse and click"""
+
     x1 = coord_mouse[0]
     y1 = coord_mouse[1]
     x2 = coord_mouse[2]
@@ -21,45 +25,53 @@ def play_mouse(move, coord_mouse, turn):
     alpha = "abcdefgh"
     start = move[:2]
     finish = move[2:]
-    startx = (alpha.find(start[0])+0.5)*dx+x1
-    starty = y2 - (int(start[1])-0.5)*dy
-    finishx = (alpha.find(finish[0])+0.5)*dx+x1
-    finishy = y2 - (int(finish[1])-0.5)*dy
+    startx = (alpha.find(start[0]) + 0.5) * dx + x1
+    starty = y2 - (int(start[1]) - 0.5) * dy
+    finishx = (alpha.find(finish[0]) + 0.5) * dx + x1
+    finishy = y2 - (int(finish[1]) - 0.5) * dy
+    
     if turn:
-        startx = x2-startx+x1
-        starty = y1+(int(start[1])-0.5)*dy
-        finishx = x2-finishx+x1
-        finishy = y1+(int(finish[1])-0.5)*dy
+        startx = x2 - startx + x1
+        starty = y1 + (int(start[1]) - 0.5) * dy
+        finishx = x2 - finishx + x1
+        finishy = y1 + (int(finish[1]) - 0.5) * dy
+    
     pyautogui.click(startx, starty)
     pyautogui.click(finishx, finishy)
+
     if len(move) == 5:
         pyautogui.click()
 
 
 def get_move(a, b, turn="white", game="chess.com"):
-    im = pyautogui.screenshot("board.png", (a[0], a[1], b[0]-a[0], b[1]-a[1]))
-    onex = im.size[0]//8
-    oney = im.size[1]//8
+    """ analyze the screen and find the move played"""
+    
+    im = pyautogui.screenshot("board.png", (a[0], a[1], b[0] - a[0], b[1] - a[1]))
+    onex = im.size[0] // 8
+    oney = im.size[1] // 8
     d = {}
     pixel = pixel2 = None
-    with open("images/"+game+"/pixel.txt", "r") as file:
+    
+    with open("images/" + game + "/pixel.txt", "r") as file:
         pixel = eval(file.readline())
         pixel2 = eval(file.readline())
         file.close()
+    
     for x in range(8*onex):
         for y in range(8*oney):
             rgb = im.getpixel((x, y))
-            square = str(x//onex)+str(y//oney)
+            square = str(x // onex) + str(y // oney)
             if rgb in pixel:
                 if square in d:
                     d[square] += 1
                 else:
                     d[square] = 1
+    
     squares = ["No", "No"]
     squares_val = [0, 0]
     for x in range(8):
         for y in range(8):
-            square = str(x)+str(y)
+            square = str(x) + str(y)
             if square in d:
                 val = d[square]
                 if val > squares_val[0]:
@@ -68,47 +80,65 @@ def get_move(a, b, turn="white", game="chess.com"):
                 elif val > squares_val[1]:
                     squares_val = [squares_val[0], val]
                     squares = [squares[0], square]
+    
     start = squares[0]
     end = squares[1]
     alpha = "abcdefgh"
     num = 8
+    
     if turn == "black":
         alpha = alpha[::-1]
         num = -1
+    
     if "No" not in squares:
-        start = alpha[int(start[0])]+str(abs(num-int(start[1])))
-        end = alpha[int(end[0])]+str(abs(num-int(end[1])))
+        start = alpha[int(start[0])] + str(abs(num - int(start[1])))
+        end = alpha[int(end[0])] + str(abs(num - int(end[1])))
+    
     print(start, end)
     return [start, end]
 
 
 def find_first_pixel(website):
+    """ find the first pixel of the upper-left pixel of the chessboard
+    with the colors of the website"""
+
     im = pyautogui.screenshot()
-    with open("images/"+website+"/pixel.txt", "r") as f:
+    
+    with open("images/" + website + "/pixel.txt", "r") as f:
         f.readline()
         pixel2=eval(f.readline())
         f.close()
+    
     for y in range(im.size[1]):
         for x in range(im.size[0]):
             rgb = im.getpixel((x, y))
             if rgb in pixel2:
                 return [x, y]
+    
     raise TypeError
 
 
 def find_last_pixel(website):
+    """ find the last pixel in the lower-right of the chessboard"""
+    
     im = pyautogui.screenshot()
+    
     with open("images/"+website+"/pixel.txt", "r") as f:
             f.readline()
             pixel2=eval(f.readline())
             f.close()
-    for y in range(im.size[1]-1, 0, -1):
-        for x in range(im.size[0]-1, 0, -1):
+    
+    for y in range(im.size[1] - 1, 0, -1):
+        for x in range(im.size[0] - 1, 0, -1):
             rgb = im.getpixel((x, y))
             if rgb in pixel2:
                 return [x, y]
+    
     raise TypeError
 
 
 def write_move(move):
+    """ write directly the move in 'e1e2' format
+    Can be used to passby the 'click cheat' features"""
+    
     pyautogui.write(move)
