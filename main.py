@@ -553,8 +553,8 @@ def analyse():
             move = str(Move)
             x0 = "abcdefgh".find(move[0]) * 80 + 40
             x1 = "abcdefgh".find(move[2]) * 80 + 40
-            y0 = 640-int(move[1]) * 80 + 40
-            y1 = 640-int(move[3]) * 80 + 40
+            y0 = 640 - int(move[1]) * 80 + 40
+            y1 = 640 - int(move[3]) * 80 + 40
             color = ["blue", "red"][not coord.turn]
             if move == best:
                 color = "green"
@@ -578,10 +578,10 @@ def click(event):
     
     print(time_is_depth)
     if engine_opt!=None:
-        if EngineOption.get()!=last_choice:
+        if EngineOption.get() != last_choice:
             print(last_choice, EngineOption.get())
-            last_choice=EngineOption.get()
-            time_is_depth = EngineOption.get()=="off"
+            last_choice = EngineOption.get()
+            time_is_depth = EngineOption.get() == "off"
             tk.update()
             print(time_is_depth, EngineOption.get())
             time_thinking.destroy()
@@ -685,7 +685,7 @@ def main():
     w = Canvas(tk,
                width=640,
                height=640,
-               bg="#"+str(hex(238))[2:]+str(hex(216)[2:]+str(hex(181))[2:]))
+               bg="#"+str(hex(200))[2:]+str(hex(216)[2:]+str(hex(21))[2:]))
     
     w.pack()
     
@@ -695,7 +695,7 @@ def main():
                                (j - 1) * 80,
                                (i + 1) * 80,
                                j * 80,
-                               fill = "#" + str(hex(181))[2:] + str(hex(136))[2:] + str(hex(99))[2:])
+                               fill = "#" + str(hex(150))[2:] + str(hex(166))[2:] + str(hex(21))[2:])
     
     for i in range(0, 9, 2):
         for j in range(0, 9, 2):
@@ -703,7 +703,7 @@ def main():
                                (j - 1) * 80,
                                (i + 1) * 80,
                                j * 80,
-                               fill = "#"+str(hex(181))[2:] + str(hex(136))[2:] + str(hex(99))[2:])
+                               fill = "#"+str(hex(150))[2:] + str(hex(166))[2:] + str(hex(21))[2:])
     w.create_rectangle(0, 0, 640, 640, fill="black", tag="pieces")
     
     MusicOption = StringVar()
