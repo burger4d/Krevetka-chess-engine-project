@@ -541,38 +541,9 @@ def click(event):
                 if not coord.turn and mode == "normal":
                     player = "black"
                 if mode == "analysis":
+                    # TODO
                     pass
-                    """
-                    board = coord.copy()
-                    play_engine(board, engine, "Nothing", time2think, time_is_depth)
-                    best = board.move_stack[-1]
-                    best = engine.play(coord, chess.engine.Limit(time2think)).move
-                    print(best)
-                    moves = analyse_position(coord, engine, time2think, time_is_depth)["moves"]
-                    if best not in moves:
-                        moves = [best]+moves
-                    best = str(best)
-                    w.itemconfigure("analyse", state="hidden")
-                    for Move in moves:
-                        if Move in coord.legal_moves:
-                            move = str(Move)
-                            x0 = "abcdefgh".find(move[0])*80+40
-                            x1 = "abcdefgh".find(move[2])*80+40
-                            y0 = 640-int(move[1])*80+40
-                            y1 = 640-int(move[3])*80+40
-                            color = ["blue", "red"][not coord.turn]
-                            if move == best:
-                                color = "green"
-                            w.create_line(x0, y0, x1, y1, fill=color, tag="analyse")
-                            board = coord.copy()
-                            board.push_san(move)
-                            try:
-                                if time_is_depth:
-                                    w.create_text(x1, y1, text=str(analyse_position(board, engine, time2think-1, time_is_depth)["score"].pov(True)), fill=color, font="Times 22", tag="analyse")
-                            except:
-                                pass
-                            tk.update()
-                        """
+
                 else:
                     Draw(player)
             elif mode == "play":
@@ -610,7 +581,7 @@ def main():
         pass
     label = None #photo
     last_choice = "off"
-    engine_opt = None #widget for engine option
+    engine_opt = None # widget for engine option
     ok = False  # if we can activate the function Draw
     time2think = 1.0  # time thinking or depth, it depends of the boolean time_is_depth
     last_move = ""  # explicit
