@@ -51,7 +51,8 @@ def verification(coord):
         Btn.pack()
     
     elif coord.can_claim_draw():
-        w.create_text(320, 320, text="DRAW?", font="Times 30", fill="orange", tag="pieces")
+        w.create_text(320, 320, text="DRAW?", font="Times 30", fill="orange",
+                      tag="pieces")
 
 
 def Draw(turn):
@@ -59,13 +60,14 @@ def Draw(turn):
     global last_move
     
     if engine==None:
-        tk.title("Chess: "+mode+" mode")
+        tk.title("Chess: " + mode + " mode")
     
     else:
         if coord.move_stack!=[]:
-            tk.title("Chess: "+mode+" "+Engine+" "+str(coord.move_stack[-1]))
+            tk.title("Chess: " + mode + " " + Engine + " " +\
+                     str(coord.move_stack[-1]))
         else:
-            tk.title("Chess: "+mode+" "+Engine)
+            tk.title("Chess: " + mode + " " + Engine)
     
     tk.attributes("-topmost", -1)
     w.itemconfigure("pieces", state="hidden")
@@ -139,7 +141,7 @@ def select0():
     click_move = ""
     
     try:
-        music = MusicOption.get()=="on"  # boolean
+        music = MusicOption.get() == "on"  # boolean
         music_opt.destroy()
     
     except:
@@ -164,7 +166,8 @@ def select2():
     select0()
     
     w.create_rectangle(0, 0, 640, 640, fill="black", tag="pieces")
-    w.create_text(320, 320, text="Choose the chess engine", font="Times 20", fill="green", tag="pieces")
+    w.create_text(320, 320, text="Select the chess engine", font="Times 20",
+                  fill="green", tag="pieces")
     variable = StringVar()
     variable.set("Krevetka")
     engines = ["Krevetka"]
@@ -190,7 +193,8 @@ def select2():
 
 def select3():
     """using AI -> ok"""
-    global btn, engine, opt, Btn1, Btn2, Btn3, level, Engine, time_thinking, engine_opt, EngineOption
+    global btn, engine, opt, Btn1, Btn2, Btn3, level, Engine, time_thinking,\
+    engine_opt, EngineOption
     
     btn.destroy()
     opt.destroy()
@@ -214,7 +218,8 @@ def select3():
         name = "engines/"+sys.platform+"/"
         engine = chess.engine.SimpleEngine.popen_uci(name+Engine)
     
-    w.create_text(320, 320, text="About the chess engine...", font="Times 20", fill="green", tag="pieces")
+    w.create_text(320, 320, text="Configure the chess engine:", font="Times 20",
+                  fill="green", tag="pieces")
     Btn1 = Button(tk, text="play against it", command=select3p)
     Btn1.pack()
     Btn2 = Button(tk, text="use it as a bot", command=select3b)
@@ -225,12 +230,16 @@ def select3():
         Btn3.pack()
         
         if time_is_depth:
-            time_thinking = Scale(tk, orient="horizontal", from_=1, to=50, resolution=1, tickinterval=5, length=500, label="depth")
+            time_thinking = Scale(tk, orient="horizontal", from_=1, to=50,
+                                  resolution=1, tickinterval=5, length=500, 
+                                  label="depth")
             time_thinking.set(5)
             time_thinking.pack()
         
         else:
-            time_thinking = Scale(tk, orient="horizontal", from_=0.1, to=10, resolution=0.1, tickinterval=1, length=400, label="time thinking")
+            time_thinking = Scale(tk, orient="horizontal", from_=0.1, to=10,
+                                  resolution=0.1, tickinterval=1, length=400,
+                                  label="time thinking")
             time_thinking.set(1)
             time_thinking.pack()
 
@@ -266,7 +275,8 @@ def select3a():
 
 def select4():
     """using AI -> ok -> bot or play"""
-    global Btn1, Btn2, Btn3, level, lvl, opt, variable, time_thinking, time2think, engine_opt
+    global Btn1, Btn2, Btn3, level, lvl, opt, variable, time_thinking,\
+    time2think, engine_opt
     
     if engine!="Krevetka":
         pass
@@ -286,7 +296,8 @@ def select4():
     
     if mode =="bot" or mode == "play":
         w.create_rectangle(0, 0, 640, 640, fill="black", tag="pieces")
-        w.create_text(320, 320, text="Don't forget to choose\nan opening book, if you want", font="Times 20", fill="green", tag="pieces")
+        w.create_text(320, 320, text="Optional opening book",
+                      font="Times 20", fill="green", tag="pieces")
         books = ["Nothing"]
         
         if "polyglot" in os.listdir():
@@ -297,9 +308,9 @@ def select4():
         opt.pack()
     
     if mode != "analysis":
-        Btn1 = Button(tk, text="White/player vs Black/AI", command=select4b)
+        Btn1 = Button(tk, text="White:player Black:AI", command=select4b)
         Btn1.pack()
-        Btn2 = Button(tk, text="Black/player vs White/AI", command=select4w)
+        Btn2 = Button(tk, text="Black:player White:AI", command=select4w)
         Btn2.pack()
 
 
@@ -341,7 +352,11 @@ def select5():
         WriteOption.set("off")
         write_opt.pack()
         w.create_rectangle(0, 0, 640, 640, fill="black", tag="pieces")
-        w.create_text(320, 320, text="Choose the website\n(make sure the chessboard is fully visible)\n\nTip: if you want to turn off the bot\nduring the game, put the\nmouse in the top-left corner", font="Times 20", fill="green", tag="pieces")
+        w.create_text(320, 320, text="Select the website\n\
+                      (make sure that:" \
+                      "\n-the chessboard can be seen\
+                        -you have the default colors enabled)\n\n",
+            font="Times 20", fill="green", tag="pieces")
         websites = ["detect automatically(slower)"]
         
         if "images" in os.listdir():
@@ -365,7 +380,7 @@ def select6():
     """using AI -> ok -> bot -> white or black -> ok"""
     global btn, website, opt, player2, write_opt, write, ok
     
-    write=WriteOption.get()=="on"#boolean
+    write = WriteOption.get() == "on"#boolean
     w.itemconfigure("recognition", state="hidden")
     btn.destroy()
     write_opt.destroy()
@@ -426,26 +441,33 @@ def bot():
         
     except:  # if not found with image recognition, use the mouse to detect the corners
         nsec = 4
-        pyautogui.alert(str(nsec)+"s for the mouse to be in the top left-hand corner of the board")
+        pyautogui.alert(str(nsec) + \
+                        "s for the mouse to be in the top left-hand corner of the board")
         sec = nsec
         Draw(player2)
         while sec>0:
-            w.create_text(320, 320, text=str(sec)+"s for the mouse to be in the\ntop left-hand\ncorner of the board", fill="red", font="Times 20", tag="recognition")
+            w.create_text(320, 320, text=str(sec) +\
+                          "s for the mouse to be in the\ntop left-hand\ncorner of the board",
+                          fill="red", font="Times 20", tag="recognition")
             tk.update()
             sleep(1)
             sec -= 1
             w.itemconfigure("recognition", state="hidden")
         coord_board1 = get_mouse_board()
         sec = nsec
-        pyautogui.alert(str(nsec)+"s for the mouse to be in the lower right-hand corner of the board")
+        pyautogui.alert(str(nsec) +\
+                        "s for the mouse to be in the lower right-hand corner of the board")
         while sec>0:
-            w.create_text(320, 320, text=str(sec)+"s for the mouse to be in the\nlower right-hand\ncorner of the board", fill="red", font="Times 20", tag="recognition")
+            w.create_text(320, 320, text=str(sec) +\
+                          "s for the mouse to be in the\nlower right-hand\ncorner of the board",
+                          fill="red", font="Times 20", tag="recognition")
             tk.update()
             sleep(1)
             sec -= 1
             w.itemconfigure("recognition", state="hidden")
         coord_board2 = get_mouse_board()
-    coord_board = coord_board1+coord_board2
+    coord_board = coord_board1 + coord_board2
+    
     if player2 == "white":
         if engine == "Krevetka":
             play_white(coord, lvl, book)
@@ -455,7 +477,7 @@ def bot():
         if write:
             write_move(str(coord.move_stack[-1]))
         else:
-            play_mouse(str(coord.move_stack[-1]), coord_board, player2=="black")
+            play_mouse(str(coord.move_stack[-1]), coord_board, player2 == "black")
     
     while True:
         if coord.is_checkmate() or get_mouse_board() == [0, 0]:
@@ -463,13 +485,13 @@ def bot():
         
         if (coord.turn and player == "white") or (not coord.turn and player == "black"):  # player's turn
             move0 = get_move(coord_board1, coord_board2, player2, website)
-            move1 = move0[0]+move0[1]  # e2e4 ?
-            move2 = move0[1]+move0[0]  # or e4e2 ?
+            move1 = move0[0] + move0[1]  # e2e4 ?
+            move2 = move0[1] + move0[0]  # or e4e2 ?
             l = list(map(str, coord.legal_moves))
             
-            if (move1 in l) or (move1+"q" in l):
+            if (move1 in l) or (move1 + "q" in l):
                 move = move1
-            elif (move2 in l) or (move2+"q" in l):
+            elif (move2 in l) or (move2 + "q" in l):
                 move = move2
             elif "e1a1" in [move1, move2] and "e1c1" in l:
                 move="e1c1"
@@ -485,7 +507,7 @@ def bot():
                 pass#-(sleep(time2think-0.1)
             else:
                 play_human(move)
-                play_human(move+"q")
+                play_human(move + "q") # automatic queen promotion
                 Draw(player2)
         
         else:  # bot's turn
@@ -500,14 +522,14 @@ def bot():
                 write_move(str(coord.move_stack[-1]))
                 Draw(player2)
             else:
-                play_mouse(str(coord.move_stack[-1]), coord_board, player2=="black")
+                play_mouse(str(coord.move_stack[-1]), coord_board, player2 == "black")
                 Draw(player2)
 
 
 def undo():
     if coord.move_stack!=[]:
         coord.pop()
-        if mode=="play" and coord.move_stack!=[]:
+        if mode == "play" and coord.move_stack!=[]:
             coord.pop()
         Draw(player)
 
@@ -541,7 +563,9 @@ def analyse():
             board.push_san(move)
 
             try:
-                w.create_text(x1, y1, text=str(analyse_position(board, engine, time2think, time_is_depth)["score"].pov(True)), fill=color, font="Times 22", tag="analyse")
+                w.create_text(x1, y1, text=str(analyse_position(board, engine,
+                                                                time2think, time_is_depth)["score"].pov(True)),
+                                                                fill=color, font="Times 22", tag="analyse")
                 
             except:
                 pass
@@ -562,11 +586,15 @@ def click(event):
             print(time_is_depth, EngineOption.get())
             time_thinking.destroy()
             if time_is_depth:
-                time_thinking = Scale(tk, orient="horizontal", from_=1, to=50, resolution=1, tickinterval=5, length=500, label="depth")
+                time_thinking = Scale(tk, orient="horizontal", from_=1, to=50,
+                                      resolution=1, tickinterval=5, length=500,
+                                      label="depth")
                 time_thinking.set(5)
                 time_thinking.pack()
             else:
-                time_thinking = Scale(tk, orient="horizontal", from_=0.1, to=10, resolution=0.1, tickinterval=1, length=400, label="time thinking")
+                time_thinking = Scale(tk, orient="horizontal", from_=0.1, to=10,
+                                      resolution=0.1, tickinterval=1, length=400,
+                                      label="time thinking")
                 time_thinking.set(1)
                 time_thinking.pack()
     elif mode != "start" and ok:
@@ -618,12 +646,15 @@ def click(event):
             else:
                 x = "abcdefgh"[::-1].find(x) * 80
                 y = (int(y) - 1) * 80
-            w.create_oval(x + 35, y + 35, x + 45, y + 45, fill="red", tag="pieces")
+            w.create_oval(x + 35, y + 35, x + 45, y + 45, fill="red",
+                          tag="pieces")
             tk.update()
 
 
 def main():
-    global label, fen_starter, textFen, engine_opt, time_is_depth, ok, last_move, time2think, MusicOption, music_opt, Btn1, Btn2, tk, w, mode, click_move, player, engine, book, coord, last_choice
+    global label, fen_starter, textFen, engine_opt, time_is_depth, ok,\
+    last_move, time2think, MusicOption, music_opt, Btn1, Btn2, tk, w,\
+        mode, click_move, player, engine, book, coord, last_choice
     
     while len(coord.move_stack)>0:
             coord.pop()
@@ -672,7 +703,7 @@ def main():
                                (j - 1) * 80,
                                (i + 1) * 80,
                                j * 80,
-                               fill = "#"+str(hex(181))[2:] + str(hex(136))[2:]+str(hex(99))[2:])
+                               fill = "#"+str(hex(181))[2:] + str(hex(136))[2:] + str(hex(99))[2:])
     w.create_rectangle(0, 0, 640, 640, fill="black", tag="pieces")
     
     MusicOption = StringVar()
@@ -689,7 +720,9 @@ def main():
     else:
         w.create_text(320,
                       320,
-                      text="''I don't Believe in psychology,\nI believe in good moves''\nBobby Fischer\n"+chr(9818)+chr(9819)+chr(9820)+chr(9821)+chr(9822)+chr(9823),
+                      text="''I don't Believe in psychology,\nI believe in good moves''\nBobby Fischer\n"\
+                        + chr(9818) + chr(9819) + chr(9820) + chr(9821) +\
+                            chr(9822) + chr(9823),
                       font="Times 20",
                       fill="red",
                       tag="pieces")
@@ -699,9 +732,10 @@ def main():
     textFen = Entry(tk, width=50)
     textFen.insert(0, "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR")
     textFen.pack()
-    Btn1 = Button(tk, text="Classic 1v1 (no AI)", overrelief="ridge", command=select1)
+    Btn1 = Button(tk, text="Classic 1v1 (no engine)", overrelief="ridge",
+                  command=select1)
     Btn1.pack()
-    Btn2 = Button(tk, text="Use AI", overrelief="ridge", command=select2)
+    Btn2 = Button(tk, text="Use a chess engine", overrelief="ridge", command=select2)
     Btn2.pack()
     w.bind_all("<Button-1>", click)
     tk.mainloop()
