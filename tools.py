@@ -61,11 +61,13 @@ def get_move(a, b, turn="white", game="chess.com"):
         for y in range(8*oney):
             rgb = im.getpixel((x, y))
             square = str(x // onex) + str(y // oney)
-            if rgb in pixel:
-                if square in d:
-                    d[square] += 1
-                else:
-                    d[square] = 1
+            for opt in pixel:
+                if dst(rgb, opt) <= dst_max:
+                    
+                    if square in d:
+                        d[square] += 1
+                    else:
+                        d[square] = 1
     
     squares = ["No", "No"]
     squares_val = [0, 0]
@@ -97,6 +99,12 @@ def get_move(a, b, turn="white", game="chess.com"):
     print(start, end)
     return [start, end]
 
+dst_max = 5
+
+def dst(rgb1, rgb2):
+    a,b,c = rgb1
+    d,e,f = rgb2
+    return ((a - d) ** 2 + (b - e) ** 2 + (c - f) ** 2) ** 0.5
 
 def find_first_pixel(website):
     """ find the first pixel of the upper-left pixel of the chessboard
@@ -114,6 +122,11 @@ def find_first_pixel(website):
             rgb = im.getpixel((x, y))
             if rgb in pixel2:
                 return [x, y]
+            
+            # if not perfect match
+            for opt in pixel2:
+                if dst(rgb, opt) <= dst_max:
+                    return [x, y]
     
     raise TypeError
 
@@ -133,7 +146,11 @@ def find_last_pixel(website):
             rgb = im.getpixel((x, y))
             if rgb in pixel2:
                 return [x, y]
-    
+            
+            # if not perfect match
+            for opt in pixel2:
+                if dst(rgb, opt) <= dst_max:
+                    return [x, y]
     raise TypeError
 
 
