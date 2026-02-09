@@ -1,0 +1,2 @@
+# How to improve and create your own files in this section
+Each 'website' has its name on the folder with the file pixel.txt. The first line is the possible values of highlighted squares after a move was played. The second line is The color of the white square, which is also in the top-left and the lower-right of the chessboard.
