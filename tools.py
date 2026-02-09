@@ -3,37 +3,6 @@ from time import time, sleep
 from krevetka import *
 import pyautogui
 from random import *
-'''
-from vosk import Model, KaldiRecognizer
-import pyaudio
-
-from fuzzywuzzy import process
-
-model = Model("vosk-model-small-fr-0.22")
-recognizer = KaldiRecognizer(model, 16000)
-mic = pyaudio.PyAudio()
-
-
-def recognize_audio():
-    stream = mic.open(format=pyaudio.paInt16, channels=1, rate=16000, input=True, frames_per_buffer=8192)
-    stream.start_stream()
-    text = "1"*20
-    print("start")
-    words = [""]
-    while text[14:-3]!="":
-        data = stream.read(4096)
-        if recognizer.AcceptWaveform(data):
-            text = recognizer.Result()
-            print(text[14:-3])
-            words.append(text[14:-3])
-    return words[-2]
-
-def get_part_of_move(is_number):
-    List = ["a", "b", "c", "d", "e", "f", "g", "h"]
-    if is_number:
-        List = ["un", "deux", "trois", "six", "sept", "huit"]
-    return process.extract(recognize_audio(), List)[0][0]
-'''
 
 
 def get_mouse_board():
@@ -41,27 +10,6 @@ def get_mouse_board():
     print("mouse", x, y)
     return [x, y]
 
-"""
-def goTo(x3, y3, click = True):
-    print("goTo")
-    x0, y0 = pyautogui.position()
-    a = random.choice([-1, 1])
-    A = 50
-    B = 100
-    x1 = (x3-x0)/2 + random.randint(A, B) * a
-    y1 = (x3-x0)/2 + random.randint(A, B) * a
-    x2 = (x3-x0)/2 + random.randint(A, B) * (-a)
-    y2 = (x3-x0)/2 + random.randint(A, B) * (-a)
-    x = lambda t: t+1
-    X = lambda t: (1-t)**3 * x0 + 3*t*(1-t)**2 * x1 + 3*t**2*(1-t) * x2 + t**3 * x3
-    Y = lambda t: (1-t)**3 * y0 + 3*t*(1-t)**2 * y1 + 3*t**2*(1-t) * y2 + t**3 * y3
-    #print(X(0))
-    n = 2
-    for i in range(0, 10**n + 1):
-        t = i/(10**n)
-        pyautogui.moveTo(X(t), Y(t), 0.01)
-    pyautogui.click()
-"""
 
 def play_mouse(move, coord_mouse, turn):
     x1 = coord_mouse[0]
