@@ -19,6 +19,7 @@ def speak(text):
 def verification(coord):
     """verify if there is a checkmate, a draw..."""
     global phase
+    
     if coord.is_checkmate():
         phase = 0
         w.create_text(320, 360, text="checkmate", font="Times 30", fill="red")
@@ -32,6 +33,7 @@ def verification(coord):
                 os.system("endgame.mp3")
             except:
                 pass
+    
     elif coord.is_stalemate():
         phase = 0
         w.create_text(320, 320, text="DRAW", font="Times 30", fill="orange")
@@ -47,6 +49,7 @@ def verification(coord):
                 pass
         Btn = Button(tk, text="Back to the menu", command=main)
         Btn.pack()
+    
     elif coord.can_claim_draw():
         w.create_text(320, 320, text="DRAW?", font="Times 30", fill="orange", tag="pieces")
 
@@ -54,75 +57,91 @@ def verification(coord):
 def Draw(turn):
     """'drawing' the board"""
     global last_move
+    
     if engine==None:
         tk.title("Chess: "+mode+" mode")
+    
     else:
         if coord.move_stack!=[]:
             tk.title("Chess: "+mode+" "+Engine+" "+str(coord.move_stack[-1]))
         else:
             tk.title("Chess: "+mode+" "+Engine)
+    
     tk.attributes("-topmost", -1)
     w.itemconfigure("pieces", state="hidden")
     d = string_coord(coord)  # from krevetka.py
+    
     if turn != "white":
         d = d[::-1]
+    
     for i in range(8):
         for j in range(8):
-            D=d[i*8+j]
+            D=d[i * 8 + j]
             if D == D.lower():
-                w.create_text((j+0.5) * 80,
+                w.create_text((j + 0.5) * 80,
                               (i + 0.5) * 80,
                               text={
-                                  ".":" ", "k":chr(9818),
-                                  "q":chr(9819),
-                                  "r":chr(9820), "b":chr(9821),
-                                  "n":chr(9822),
-                                  "p":chr(9823)
-                                  }[d[i*8+j]],
+                                  ".":" ", "k": chr(9818),
+                                  "q": chr(9819),
+                                  "r": chr(9820),
+                                  "b": chr(9821),
+                                  "n": chr(9822),
+                                  "p": chr(9823)
+                                  }[d[i * 8 + j]],
                               font="Times 40",
                               tag="pieces")
             else:
-                w.create_text((j+0.5) * 80,
+                w.create_text((j + 0.5) * 80,
                               (i + 0.5) * 80,
                               text={
-                                  ".":" ",
-                                  "k":chr(9818),
-                                  "q":chr(9819),
-                                  "r":chr(9820),
-                                  "b":chr(9821),
-                                  "n":chr(9822),
-                                  "p":chr(9823)
-                                  }[d[i*8+j].lower()],
+                                  ".": " ",
+                                  "k": chr(9818),
+                                  "q": chr(9819),
+                                  "r": chr(9820),
+                                  "b": chr(9821),
+                                  "n": chr(9822),
+                                  "p": chr(9823)
+                                  }[d[i * 8 + j].lower()],
                               font="Times 40",
                               fill="#666666",
                               tag="pieces")
+                
     verification(coord)
+
     if coord.move_stack!=[] and last_move!=coord.move_stack[-1] and music:
         speak(coord.move_stack[-1])
         last_move=coord.move_stack[-1]
+
     tk.update()
 
 
 def select0():
     """in all cases"""
     global label, Btn1, Btn2, click_move, music_opt, music, textFen, fen_starter, coord
+    
     try:
         label.destroy()
     except Exception as err:
         print(err)
+    
     try:
         fen_starter = textFen.get()
         coord.set_board_fen(fen_starter)
         textFen.destroy()
+    
     except Exception as err:
         print("invalide fen+"+str(err))
+    
     Btn1.destroy()
     Btn2.destroy()
+    
     Draw(player)
     click_move = ""
+    
     try:
         music = MusicOption.get()=="on"  # boolean
         music_opt.destroy()
+    
     except:
         pass
 
@@ -130,6 +149,7 @@ def select0():
 def select1():
     """human vs human"""
     global mode, ok
+    
     ok=True
     Btn = Button(tk, text="Back to the menu", command=main)
     Btn.pack()
@@ -140,20 +160,28 @@ def select1():
 def select2():
     """using AI"""
     global btn, variable, opt
+    
     select0()
+    
     w.create_rectangle(0, 0, 640, 640, fill="black", tag="pieces")
     w.create_text(320, 320, text="Choose the chess engine", font="Times 20", fill="green", tag="pieces")
     variable = StringVar()
     variable.set("Krevetka")
     engines = ["Krevetka"]
+    
     if "engines" in os.listdir():
         list_engines = []
+        
         for file in os.listdir("engines/"+sys.platform):
+            
             if (".dll" in file) or (".pb" in file):
                 pass
+            
             else:
                 list_engines.append(file)
+        
         engines += list_engines
+    
     opt = OptionMenu(tk, variable, *engines)
     opt.pack()
     btn = Button(tk, text="ok", command=select3)
@@ -163,11 +191,13 @@ def select2():
 def select3():
     """using AI -> ok"""
     global btn, engine, opt, Btn1, Btn2, Btn3, level, Engine, time_thinking, engine_opt, EngineOption
+    
     btn.destroy()
     opt.destroy()
     Draw(player)
     w.create_rectangle(0, 0, 640, 640, fill="black", tag="pieces")
     Engine = variable.get()
+    
     if Engine == "Krevetka":
         engine="Krevetka"
         level = Scale(tk, orient="horizontal",
@@ -179,40 +209,26 @@ def select3():
                       label="level(depth)")
         level.pack()
         level.set(2)
+    
     else:
-        """
-        EngineOption = StringVar()
-        engine_opt = Checkbutton(tk,
-                            text="play by depth instead of time",
-                            variable=EngineOption,
-                            onvalue="on",
-                            offvalue="off")
-        EngineOption.set("on")
-        engine_opt.pack()
-        
-        if time_is_depth:
-            time_thinking = Scale(tk, orient="horizontal", from_=1, to=50, resolution=1, tickinterval=5, length=500, label="depth")
-            time_thinking.set(5)
-            time_thinking.pack()
-        else:
-            time_thinking = Scale(tk, orient="horizontal", from_=0.1, to=10, resolution=0.1, tickinterval=1, length=400, label="time thinking")
-            time_thinking.set(1)
-            time_thinking.pack()
-        """
         name = "engines/"+sys.platform+"/"
         engine = chess.engine.SimpleEngine.popen_uci(name+Engine)
+    
     w.create_text(320, 320, text="About the chess engine...", font="Times 20", fill="green", tag="pieces")
     Btn1 = Button(tk, text="play against it", command=select3p)
     Btn1.pack()
     Btn2 = Button(tk, text="use it as a bot", command=select3b)
     Btn2.pack()
+    
     if engine!="Krevetka":
         Btn3 = Button(tk, text="chess board analysis", command=select3a)
         Btn3.pack()
+        
         if time_is_depth:
             time_thinking = Scale(tk, orient="horizontal", from_=1, to=50, resolution=1, tickinterval=5, length=500, label="depth")
             time_thinking.set(5)
             time_thinking.pack()
+        
         else:
             time_thinking = Scale(tk, orient="horizontal", from_=0.1, to=10, resolution=0.1, tickinterval=1, length=400, label="time thinking")
             time_thinking.set(1)
@@ -221,6 +237,7 @@ def select3():
 def select3b():
     """using AI -> ok -> bot"""
     global mode
+    
     mode = "bot"
     select4()
 
@@ -228,14 +245,15 @@ def select3b():
 def select3p():
     """using AI -> ok -> play"""
     global mode
+    
     mode = "play"
-    print(1)
     select4()
 
 
 def select3a():
     """using AI -> ok -> analysis"""
     global mode, Btn3, ok
+    
     ok = True
     mode = "analysis"
     Btn3.destroy()
@@ -249,28 +267,35 @@ def select3a():
 def select4():
     """using AI -> ok -> bot or play"""
     global Btn1, Btn2, Btn3, level, lvl, opt, variable, time_thinking, time2think, engine_opt
+    
     if engine!="Krevetka":
         pass
         time2think = time_thinking.get()
         time_thinking.destroy()
         #engine_opt.destroy()
         #engine_opt = None
+    
     try:
         lvl = level.get()
         level.destroy()
+    
     except:
         Btn3.destroy()
+    
     select0()
-    print(2)
+    
     if mode =="bot" or mode == "play":
         w.create_rectangle(0, 0, 640, 640, fill="black", tag="pieces")
         w.create_text(320, 320, text="Don't forget to choose\nan opening book, if you want", font="Times 20", fill="green", tag="pieces")
         books = ["Nothing"]
+        
         if "polyglot" in os.listdir():
             books += os.listdir("polyglot")
+        
         variable.set("Nothing")
         opt = OptionMenu(tk, variable, *books)
         opt.pack()
+    
     if mode != "analysis":
         Btn1 = Button(tk, text="White/player vs Black/AI", command=select4b)
         Btn1.pack()
@@ -281,6 +306,7 @@ def select4():
 def select4w():
     """using AI -> ok -> bot or play -> white"""
     global player, book, opt, variable
+    
     book = variable.get()
     opt.destroy()
     player="black"
@@ -290,6 +316,7 @@ def select4w():
 def select4b():
     """using AI -> ok -> bot or play -> black"""
     global player, book, opt, variable
+    
     book = variable.get()
     opt.destroy()
     player="white"
@@ -299,9 +326,11 @@ def select4b():
 def select5():
     """using AI -> ok -> play or bot -> white or black"""
     global Engine, btn, opt, book, variable, WriteOption, write_opt, ok
+    
     book = variable.get()
     opt.destroy()
     select0()
+    
     if mode == "bot":
         WriteOption = StringVar()
         write_opt = Checkbutton(tk,
@@ -314,6 +343,7 @@ def select5():
         w.create_rectangle(0, 0, 640, 640, fill="black", tag="pieces")
         w.create_text(320, 320, text="Choose the website\n(make sure the chessboard is fully visible)\n\nTip: if you want to turn off the bot\nduring the game, put the\nmouse in the top-left corner", font="Times 20", fill="green", tag="pieces")
         websites = ["detect automatically(slower)"]
+        
         if "images" in os.listdir():
             websites += os.listdir("images")
         variable.set("detect automatically(slower)")
@@ -321,6 +351,7 @@ def select5():
         opt.pack()
         btn = Button(tk , text="ok", command=select6)
         btn.pack()
+    
     else:
         w.create_text(320, 320, text="Double-Click anywhere to start", font="Times 20", fill="green", tag="pieces")
         Undo = Button(tk, text="undo", command=undo)
@@ -333,6 +364,7 @@ def select5():
 def select6():
     """using AI -> ok -> bot -> white or black -> ok"""
     global btn, website, opt, player2, write_opt, write, ok
+    
     write=WriteOption.get()=="on"#boolean
     w.itemconfigure("recognition", state="hidden")
     btn.destroy()
@@ -340,8 +372,10 @@ def select6():
     website = variable.get()
     opt.destroy()
     player2 = "white"  # player: user, player: AI/Bot
+    
     if player == "white":
         player2 = "black"
+    
     print(player2, website)
     ok=True
     Btn = Button(tk, text="Back to the menu", command=main)
@@ -352,35 +386,41 @@ def select6():
 def bot():
     """bot is coming..."""
     global website
-    error =False
+    
+    error = False
+    
     if website=="detect automatically(slower)":
         websites=[]
+        
         if "images" in os.listdir():
             websites += os.listdir("images")
         im = pyautogui.screenshot()
+        
         for site in websites:
             with open("images/"+site+"/pixel.txt", "r") as f:
                 f.readline()
                 pixel2=eval(f.readline())
                 f.close()
+            
             try:
                 for y in range(im.size[1]):
                     for x in range(im.size[0]):
                         rgb = im.getpixel((x, y))
                         if rgb in pixel2:
-                            website=site
+                            website = site
                             print(website)
                             raise TypeError
             except:
                 error = True
+    
     try:
-        t=time.time()
-        coord_board1=find_first_pixel(website)
+        t = time.time()
+        coord_board1 = find_first_pixel(website)
         print(coord_board1)
         coord_board2 = find_last_pixel(website)
         print(coord_board2)
-        print(time.time()-t)
-        t=time.time()
+        print(time.time() - t)
+        t = time.time()
         if error:
             raise TypeError
         
@@ -393,7 +433,7 @@ def bot():
             w.create_text(320, 320, text=str(sec)+"s for the mouse to be in the\ntop left-hand\ncorner of the board", fill="red", font="Times 20", tag="recognition")
             tk.update()
             sleep(1)
-            sec-=1
+            sec -= 1
             w.itemconfigure("recognition", state="hidden")
         coord_board1 = get_mouse_board()
         sec = nsec
@@ -402,7 +442,7 @@ def bot():
             w.create_text(320, 320, text=str(sec)+"s for the mouse to be in the\nlower right-hand\ncorner of the board", fill="red", font="Times 20", tag="recognition")
             tk.update()
             sleep(1)
-            sec-=1
+            sec -= 1
             w.itemconfigure("recognition", state="hidden")
         coord_board2 = get_mouse_board()
     coord_board = coord_board1+coord_board2
@@ -416,14 +456,17 @@ def bot():
             write_move(str(coord.move_stack[-1]))
         else:
             play_mouse(str(coord.move_stack[-1]), coord_board, player2=="black")
+    
     while True:
         if coord.is_checkmate() or get_mouse_board() == [0, 0]:
             break
+        
         if (coord.turn and player == "white") or (not coord.turn and player == "black"):  # player's turn
             move0 = get_move(coord_board1, coord_board2, player2, website)
             move1 = move0[0]+move0[1]  # e2e4 ?
             move2 = move0[1]+move0[0]  # or e4e2 ?
             l = list(map(str, coord.legal_moves))
+            
             if (move1 in l) or (move1+"q" in l):
                 move = move1
             elif (move2 in l) or (move2+"q" in l):
@@ -444,6 +487,7 @@ def bot():
                 play_human(move)
                 play_human(move+"q")
                 Draw(player2)
+        
         else:  # bot's turn
             if engine == "Krevetka":
                 if player2 == "white":
@@ -475,28 +519,30 @@ def analyse():
     best = engine.play(coord, chess.engine.Limit(time2think)).move
     print(best)
     moves = analyse_position(coord, engine, time2think, time_is_depth)["moves"]
+    
     if best not in moves:
         moves = [best]+moves
+    
     best = str(best)
     w.itemconfigure("analyse", state="hidden")
+    
     for Move in moves:
         if Move in coord.legal_moves:
             move = str(Move)
-            x0 = "abcdefgh".find(move[0])*80+40
-            x1 = "abcdefgh".find(move[2])*80+40
-            y0 = 640-int(move[1])*80+40
-            y1 = 640-int(move[3])*80+40
+            x0 = "abcdefgh".find(move[0]) * 80 + 40
+            x1 = "abcdefgh".find(move[2]) * 80 + 40
+            y0 = 640-int(move[1]) * 80 + 40
+            y1 = 640-int(move[3]) * 80 + 40
             color = ["blue", "red"][not coord.turn]
             if move == best:
                 color = "green"
             w.create_line(x0, y0, x1, y1, fill=color, tag="analyse")
             board = coord.copy()
             board.push_san(move)
+
             try:
-                #if time_is_depth:
                 w.create_text(x1, y1, text=str(analyse_position(board, engine, time2think, time_is_depth)["score"].pov(True)), fill=color, font="Times 22", tag="analyse")
-                #else:
-                #    w.create_text(x1, y1, text=str(analyse_position(board, engine, 0.1, time_is_depth)["score"].pov(True)), fill=color, font="Times 22", tag="analyse")
+                
             except:
                 pass
             tk.update()
@@ -505,6 +551,7 @@ def analyse():
 def click(event):
     """getting the position of the click and moving pieces"""
     global click_move, player, time_is_depth, time_thinking, last_choice
+    
     print(time_is_depth)
     if engine_opt!=None:
         if EngineOption.get()!=last_choice:
@@ -523,13 +570,16 @@ def click(event):
                 time_thinking.set(1)
                 time_thinking.pack()
     elif mode != "start" and ok:
+        
         if player == "white":
             x = "abcdefgh"[event.x // 80]  # converting the position of the mouse in the square
             y = str(8 - event.y // 80)
+        
         else:
             x = "abcdefgh"[::-1][event.x // 80]
             y = str(-(-event.y // 80))
         click_move += x + str(y)  # adding the new square
+        
         if len(click_move) == 4:  # like 'e2e4' and not just 'e2'
             play_human(click_move)
             play_human(click_move+"q")  # promoting by default the queen for the player
@@ -546,6 +596,7 @@ def click(event):
 
                 else:
                     Draw(player)
+            
             elif mode == "play":
                 if player == "white" and not coord.turn:
                     if engine == "Krevetka":
@@ -559,26 +610,30 @@ def click(event):
                         play_engine(coord, engine, book, time2think, time_is_depth)
                 verification(coord)
                 Draw(player)
+        
         else:
             if player == "white":
                 x = "abcdefgh".find(x) * 80  # find the position where the oval can be drawed
-                y = (8-int(y)) * 80
+                y = (8 - int(y)) * 80
             else:
                 x = "abcdefgh"[::-1].find(x) * 80
-                y = (int(y)-1) * 80
-            w.create_oval(x+35, y+35, x+45, y+45, fill="red", tag="pieces")
+                y = (int(y) - 1) * 80
+            w.create_oval(x + 35, y + 35, x + 45, y + 45, fill="red", tag="pieces")
             tk.update()
 
 
 def main():
     global label, fen_starter, textFen, engine_opt, time_is_depth, ok, last_move, time2think, MusicOption, music_opt, Btn1, Btn2, tk, w, mode, click_move, player, engine, book, coord, last_choice
+    
     while len(coord.move_stack)>0:
             coord.pop()
+    
     try:
         tk.destroy()
         engine.quit()
     except:
         pass
+    
     label = None #photo
     last_choice = "off"
     engine_opt = None # widget for engine option
@@ -600,29 +655,33 @@ def main():
                width=640,
                height=640,
                bg="#"+str(hex(238))[2:]+str(hex(216)[2:]+str(hex(181))[2:]))
+    
     w.pack()
+    
     for i in range(1, 9, 2):  # the squares of the board
         for j in range(1, 9, 2):
-            w.create_rectangle(i*80,
-                               (j-1)*80,
-                               (i+1)*80,
-                               j*80,
-                               fill="#"+str(hex(181))[2:]+str(hex(136))[2:]+str(hex(99))[2:])
+            w.create_rectangle(i *80,
+                               (j - 1) * 80,
+                               (i + 1) * 80,
+                               j * 80,
+                               fill = "#" + str(hex(181))[2:] + str(hex(136))[2:] + str(hex(99))[2:])
     
     for i in range(0, 9, 2):
         for j in range(0, 9, 2):
-            w.create_rectangle(i*80,
-                               (j-1)*80,
-                               (i+1)*80,
-                               j*80,
-                               fill="#"+str(hex(181))[2:]+str(hex(136))[2:]+str(hex(99))[2:])
+            w.create_rectangle(i * 80,
+                               (j - 1) * 80,
+                               (i + 1) * 80,
+                               j * 80,
+                               fill = "#"+str(hex(181))[2:] + str(hex(136))[2:]+str(hex(99))[2:])
     w.create_rectangle(0, 0, 640, 640, fill="black", tag="pieces")
+    
     MusicOption = StringVar()
     music_opt = Checkbutton(tk,
-                            text="music option (tells the moves, and plays a song when it is the end of the game)",
+                            text="music option (work in progress)",
                             variable=MusicOption,
                             onvalue="on",
                             offvalue="off")
+    
     if "chess.gif" in os.listdir():
         photo = PhotoImage(file="chess.gif")
         label = Label(image=photo)
@@ -634,14 +693,15 @@ def main():
                       font="Times 20",
                       fill="red",
                       tag="pieces")
+    
     MusicOption.set("off")
     music_opt.pack()
     textFen = Entry(tk, width=50)
     textFen.insert(0, "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR")
     textFen.pack()
-    Btn1 = Button(tk, text="human vs human", overrelief="ridge", command=select1)
+    Btn1 = Button(tk, text="Classic 1v1 (no AI)", overrelief="ridge", command=select1)
     Btn1.pack()
-    Btn2 = Button(tk, text="against AI", overrelief="ridge", command=select2)
+    Btn2 = Button(tk, text="Use AI", overrelief="ridge", command=select2)
     Btn2.pack()
     w.bind_all("<Button-1>", click)
     tk.mainloop()
