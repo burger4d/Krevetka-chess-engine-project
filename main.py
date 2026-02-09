@@ -352,10 +352,10 @@ def select5():
         WriteOption.set("off")
         write_opt.pack()
         w.create_rectangle(0, 0, 640, 640, fill="black", tag="pieces")
-        w.create_text(320, 320, text="Select the website\n\
-                      (make sure that:" \
-                      "\n-the chessboard can be seen\
-                        -you have the default colors enabled)\n\n",
+        w.create_text(320, 320, text="Select the website\n"\
+                      "(make sure that:" \
+                      "\n-the chessboard can be seen\n"\
+                    "-you have the default colors enabled)\n\n",
             font="Times 20", fill="green", tag="pieces")
         websites = ["detect automatically(slower)"]
         
