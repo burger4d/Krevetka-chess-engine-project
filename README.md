@@ -1,19 +1,17 @@
 # Krevetka-chess-engine-project
 
-![screen_chess](https://user-images.githubusercontent.com/104983707/215318392-d886b374-1d63-421b-96d2-87f949163c7e.PNG)
 
-![chess](https://user-images.githubusercontent.com/104983707/175565331-460224df-c0cf-4618-8e6c-e00ce4897f14.PNG)
 
 A basic chess engine coded in python, with a GUI that enables you to use more advanced chess engines as bots.
 
 
-# Why Krevetka?
-The name "Krevetka" means "shrimp" in russian. The use of sea-related animal names is in the spirit of great engines such as Stockfish, or Rybka.
+# Why "Krevetka"?
+Krevetka (or Креветка) means "shrimp".
 
 # The "image recognition"
-The software captures a screenshot and searches each individual pixel for colors belonging to the chessboard. It then determines the chessboard's location on the screen, ensuring its complete visibility, and begins playing. The program continually scans for any color modifications on two squares, indicating a piece has been moved, and deduces the last move made. While you can change pieces, the program requires the colors to remain the same, and moving the chessboard or altering its size during the game is forbidden.
+The bot captures a screenshot and searches each individual pixel for colors belonging to the chessboard. It then determines the chessboard's location on the screen, ensuring its complete visibility, and begins playing. The program continually scans for any color modifications on two squares, indicating a piece has been moved, and deduces the last move made. While you can change pieces, the program requires the colors to remain the same, and moving the chessboard or altering its size during the game is forbidden.
 
-Currently, the software is compatible with the following websites: 
+Currently, the bot is compatible with the following websites: 
 - lichess
 - chess.com
 - chessfriends
@@ -39,11 +37,8 @@ Provides necessary "tools" for analyzing the screen, such as taking screenshots,
 - README.md: 
 The file that you are currently reading.
 
-# Lichess account:
-⚠WARNING⚠: NOTE THAT ANYONE USING THIS BOT FOR CHEATING WILL BE BANNED(quiet logic I think). EVEN THOUGH YOU ARE USING IT WITH A LICHESS BOT ACCOUNT, YOU MUST KNOW THAT THIS BOT DOES NOT USE THE LICHESS API, AND FOR THAT REASON THIS BOT WILL BREAK THE TERMS OF SERVICE OF LICHESS.
-(note that I am working on the implementation of the lichess API, so be patient)
-PS: note also that using bots on online chess platforms is considered as cheating.
-
+# Lichess account (banned):
+⚠WARNING⚠: CHEATING IS BAD
 ![game](https://user-images.githubusercontent.com/104983707/170866422-873fb47d-0310-46db-b7e9-55fbe7cb5910.gif)
 
 
