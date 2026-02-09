@@ -1,6 +1,6 @@
 # Krevetka-chess-engine-project
 
-
+![chess.gif]
 
 A basic chess engine coded in python, with a GUI that enables you to use more advanced chess engines as bots.
 
