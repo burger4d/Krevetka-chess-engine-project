@@ -8,6 +8,7 @@ from random import *
 import os
 from tools import *
 win = True
+
 try:
     from winsound import Beep
 except:
@@ -34,29 +35,11 @@ def string_coord(board):
             if i!=" ":
                 c+=i
     return c
-"""
-def minimax(node, depth, maxplayer):
-    EVAL = evaluation(node)
-    if depth == 0 or EVAL in [0, -100, 100]:
-        return EVAL
-    if maxplayer:#blancs=True, nors=False
-        value = -100
-        for move in list(map(str,node.legal_moves)):
-            child = copy.copy(node)
-            child.push_san(move)
-            value = max(value, minimax(child, depth - 1, False))
-    else:
-        value = 100
-        for move in list(map(str,node.legal_moves)):
-            child = copy.copy(node)
-            child.push_san(move)
-            value = min(value, minimax(child, depth - 1, True))
-    return value
-"""
 
 def change_fen(fen):
     global coord
     coord = chess.Board(fen)
+
 def evaluate(board):
     
     c = string_coord(board)
@@ -76,14 +59,6 @@ def evaluate(board):
                 score -= 20
             else:
                 score -= 10
-    #score += c[8:16].count("P")*100 #pion passé 7e rangée
-    #score -= c[48:56].count("p")*100
-    #score += c[16:24].count("P")*80 #pion 6e rangée
-    #score -= c[40:48].count("p")*80
-    #score += c[:8].count("n")*5
-    #score -= c[56:].count("N")*5
-    #score += board.is_attacked_by(chess.WHITE, 27)+board.is_attacked_by(chess.WHITE, 28)+board.is_attacked_by(chess.WHITE, 35)+board.is_attacked_by(chess.WHITE, 36)
-    #score -= board.is_attacked_by(chess.BLACK, 27)+board.is_attacked_by(chess.BLACK, 28)+board.is_attacked_by(chess.BLACK, 35)+board.is_attacked_by(chess.BLACK, 36)
     if "R" in c[8:16]:
         score += 200  # tour en 7e rangée
     if "r" in c[48:56]:
